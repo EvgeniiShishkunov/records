@@ -9,6 +9,7 @@
 			while (true) 
 			{
 				commandHandler.HandleCommand(Console.ReadLine());
+				Console.WriteLine();
 			}
 		}
 	}

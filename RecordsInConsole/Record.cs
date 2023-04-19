@@ -11,5 +11,6 @@ namespace RecordsInConsole
 		public int id;
 		public string title;
 		public string description;
+		public List<string> tags;
 	}
 }

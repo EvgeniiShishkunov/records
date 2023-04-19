@@ -54,18 +54,6 @@ namespace RecordsInConsole
 				return;
 			}
 
-			List<string> parametrWords = _commandWords.GetRange(2, _commandWords.Count-2);
-			if (parametrWords.Count>0)
-			{
-				Console.Write("НЕИЗВЕСТНЫЕ СЛОВА В ТВОЕЙ КОМАНДЕ, ЕБАЧОСИНА: ");
-				foreach (string parametrWord in parametrWords)
-				{
-					Console.Write(parametrWord + " ");
-					Console.WriteLine();
-				}
-				return;
-			}
-
 			string recordDescription = _commandWords[1];
 			if (recordDescription.First() != '"' && recordDescription.Last() != '"')
 			{
@@ -81,6 +69,16 @@ namespace RecordsInConsole
 			}
 
 			Record record = new Record();
+			List<string> tags = _commandWords.GetRange(2, _commandWords.Count - 2);
+			if (tags.Count > 0)
+			{
+				record.tags = new List<string>();
+				foreach (string tag in tags) 
+				{
+					record.tags.Add(tag);
+				}
+			}
+
 			record.description = recordDescription;
 			_appData.AddRecord(record);
 			Console.WriteLine("Запись добавлена");
@@ -92,8 +90,16 @@ namespace RecordsInConsole
 			foreach (Record record in _appData.records)
 			{
 				Console.WriteLine(record.description + "\tid: " + record.id);
+				Console.Write("Тэги: ");
+				foreach (string tag in record.tags)
+				{
+					Console.Write(tag + " ");
+				}
+				Console.WriteLine();
+				Console.WriteLine();
 			}
 		}
+
 		void DeleteCommand()
 		{
 			if (_commandWords.Count < 2)
