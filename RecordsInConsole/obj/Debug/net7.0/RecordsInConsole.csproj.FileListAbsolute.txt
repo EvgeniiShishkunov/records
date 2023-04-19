@@ -1,0 +1,15 @@
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\bin\Debug\net7.0\RecordsInConsole.exe
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\bin\Debug\net7.0\RecordsInConsole.deps.json
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\bin\Debug\net7.0\RecordsInConsole.runtimeconfig.json
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\bin\Debug\net7.0\RecordsInConsole.dll
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\bin\Debug\net7.0\RecordsInConsole.pdb
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.csproj.AssemblyReference.cache
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.AssemblyInfoInputs.cache
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.AssemblyInfo.cs
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.csproj.CoreCompileInputs.cache
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.dll
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\refint\RecordsInConsole.dll
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.pdb
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\RecordsInConsole.genruntimeconfig.cache
+C:\Users\Евгений\source\repos\RecordsInConsole\RecordsInConsole\obj\Debug\net7.0\ref\RecordsInConsole.dll

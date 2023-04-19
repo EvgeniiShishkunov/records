@@ -27,11 +27,15 @@ namespace RecordsInConsole
 			records.Add(record);
 		}
 
-		public void DeleteRecord(int id)
+		public bool DeleteRecord(int id)
 		{
 			Record removingRecord = records.Find(r => r.id == id);
 			if (removingRecord != null)
+			{
 				records.Remove(removingRecord);
+				return true;
+			}
+			else { return false; }
 		}
 	}
 }
