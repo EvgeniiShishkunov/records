@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordsInConsole
+namespace RecordsInConsole;
+
+public class Record
 {
-	public class Record
-	{
-		public int id;
-		public string title;
-		public string description;
-		public List<string> tags;
-	}
+	public int Id { get; set; }
+	public string Description { get; set; }
+	public List<string>? Tags { get; set; }
 }

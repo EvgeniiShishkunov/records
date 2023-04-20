@@ -4,38 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordsInConsole
+namespace RecordsInConsole;
+
+internal class AppData
 {
-	internal class AppData
+	public readonly List<Record> Records = new();
+
+	private int _assignId;
+
+	public void AddRecord(Record record)
 	{
-		public List<Record> records { get; private set; }
+		if (record == null)
+			return;
 
-		private int _assignId;
+		record.Id = _assignId++;
+        Records.Add(record);
+	}
 
-		public AppData()
+	public bool DeleteRecord(int id)
+	{
+		var removingRecord = Records.Find(r => r.Id == id);
+
+		if (removingRecord != null)
 		{
-			records = new List<Record>();
-			_assignId = 0;
+            Records.Remove(removingRecord);
+			return true;
 		}
-
-		public void AddRecord(Record record)
-		{
-			if (records == null)
-				return;
-
-			record.id = _assignId++;
-			records.Add(record);
-		}
-
-		public bool DeleteRecord(int id)
-		{
-			Record removingRecord = records.Find(r => r.id == id);
-			if (removingRecord != null)
-			{
-				records.Remove(removingRecord);
-				return true;
-			}
-			else { return false; }
-		}
+		else
+			return false;
 	}
 }
