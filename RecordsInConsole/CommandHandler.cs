@@ -8,17 +8,16 @@ namespace RecordsInConsole;
 
 internal class CommandHandler
 {
-    private AppData _appData;
+    private readonly AppData _appData;
 
     private string _command;
-    private List<string> _commandWords;
+    private List<string> _commandWords = new();
 
     private Dictionary<string, Action> _actionDelegates;
 
     public CommandHandler(AppData appData)
     {
         _appData = appData;
-        _commandWords = new List<string>();
         _actionDelegates = new Dictionary<string, Action>()
         {
             {"add", AddCommand },
@@ -36,9 +35,8 @@ internal class CommandHandler
             return;
 
         string firstWord = _commandWords[0].ToLowerInvariant();
-        Action action;
 
-        if (_actionDelegates.TryGetValue(firstWord, out action) == true)
+        if (_actionDelegates.TryGetValue(firstWord, out var action) == true)
         {
             action.Invoke();
         }
@@ -48,7 +46,7 @@ internal class CommandHandler
         }
     }
 
-    void AddCommand()
+    private void AddCommand()
     {
         if (_commandWords.Count < 2)
         {
@@ -88,7 +86,7 @@ internal class CommandHandler
         Console.WriteLine("Запись добавлена");
     }
 
-    void ListCommand()
+    private void ListCommand()
     {
         Console.WriteLine("Все записи");
 
@@ -108,7 +106,7 @@ internal class CommandHandler
         }
     }
 
-    void DeleteCommand()
+    private void DeleteCommand()
     {
         if (_commandWords.Count < 2)
         {

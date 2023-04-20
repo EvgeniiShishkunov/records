@@ -8,29 +8,20 @@ namespace RecordsInConsole;
 
 internal class AppData
 {
-    public readonly List<Record> Records = new();
+    public IReadOnlyCollection<Record> Records => _records;
+    private readonly List<Record> _records = new();
 
     private int _assignId;
 
     public void AddRecord(Record record)
     {
-        if (record == null)
-            return;
-
         record.Id = _assignId++;
-        Records.Add(record);
+        _records.Add(record);
     }
 
     public bool DeleteRecord(int id)
     {
-        var removingRecord = Records.Find(r => r.Id == id);
-
-        if (removingRecord != null)
-        {
-            Records.Remove(removingRecord);
-            return true;
-        }
-        else
-            return false;
+        var removingRecord = _records.Find(r => r.Id == id);
+        return _records.Remove(removingRecord);
     }
 }
