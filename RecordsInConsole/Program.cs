@@ -4,7 +4,8 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        CommandHandler commandHandler = new CommandHandler(new AppData());
+        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit());
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(commandHandler.CancelKeyPress);
 
         while (true)
         {

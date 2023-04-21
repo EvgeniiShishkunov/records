@@ -9,30 +9,45 @@ namespace RecordsInConsole;
 internal class CommandHandler
 {
     private readonly AppData _appData;
+    private readonly IEmailService _emailService;
 
     private string _command;
     private List<string> _commandWords = new();
 
     private Dictionary<string, Action> _actionDelegates;
 
-    public CommandHandler(AppData appData)
+    public CommandHandler(AppData appData, IEmailService emailService)
     {
         _appData = appData;
+        _emailService = emailService;
         _actionDelegates = new Dictionary<string, Action>()
         {
             {"add", AddCommand },
             {"list", ListCommand },
             {"delete", DeleteCommand }
         };
+        _emailService = emailService;
+    }
+
+    public void CancelKeyPress(object sender, ConsoleCancelEventArgs args)
+    {
+        Console.WriteLine("Отправка сообщения перед закрытием");
+        args.Cancel = true;
+
+        // Announce the new value of the Cancel property.
+        Console.WriteLine($"  Cancel property: {args.Cancel}");
+        Console.WriteLine("The read operation will resume...\n");
     }
 
     public void HandleCommand(string command)
     {
+        if (command == null || command.Replace(" ",String.Empty) == String.Empty ) 
+        {
+            return;
+        }
+
         _command = command;
         _commandWords = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-        if (_commandWords.Any() == false)
-            return;
 
         string firstWord = _commandWords[0].ToLowerInvariant();
 
