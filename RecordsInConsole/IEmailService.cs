@@ -8,7 +8,6 @@ namespace RecordsInConsole
 {
     internal interface IEmailService
     {
-        public string CreateEmailFromRecords(List<Record> records); 
-        public bool TrySendEmail(string email);
+        public bool TrySendRecords(List<Record> records);
     }
 }

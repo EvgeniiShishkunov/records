@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RecordsInConsole;
 
@@ -31,17 +32,23 @@ internal class CommandHandler
 
     public void CancelKeyPress(object sender, ConsoleCancelEventArgs args)
     {
-        Console.WriteLine("Отправка сообщения перед закрытием");
-        args.Cancel = true;
+        Console.WriteLine("Отправка заметок на почту");
 
-        // Announce the new value of the Cancel property.
-        Console.WriteLine($"  Cancel property: {args.Cancel}");
-        Console.WriteLine("The read operation will resume...\n");
+        bool emailSendResult = _emailService.TrySendRecords(_appData.Records.ToList());
+        if (emailSendResult == true)
+        {
+            Console.WriteLine("Сообщение с заметками отправлены");
+        }
+        else
+        {
+            Console.WriteLine("Ошибка. Сообщение с заметками не было отправлено");
+        }
+        Environment.Exit(0);
     }
 
     public void HandleCommand(string command)
     {
-        if (command == null || command.Replace(" ",String.Empty) == String.Empty ) 
+        if (command == null || command.Replace(" ", String.Empty) == String.Empty)
         {
             return;
         }

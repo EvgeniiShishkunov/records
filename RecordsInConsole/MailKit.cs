@@ -8,14 +8,9 @@ namespace RecordsInConsole
 {
     internal class MailKit : IEmailService
     {
-        public string CreateEmailFromRecords(List<Record> records)
+        public bool TrySendRecords(List<Record> records)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool TrySendEmail(string email)
-        {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
