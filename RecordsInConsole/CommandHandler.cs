@@ -73,12 +73,11 @@ internal class CommandHandler
         }
 
         Record record = new Record();
-        List<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+        HashSet<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
 
         if (tags.Any() == true)
         {
-            record.Tags = new List<string>();
-            record.Tags.AddRange(tags);
+            record.Tags = tags;
         }
 
         record.Description = recordDescription;
