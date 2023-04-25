@@ -4,7 +4,27 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit());
+        string email = "";
+        string username = "";
+        string password = "";
+
+        if (args.Length == 1)
+        {
+            email = args[0];
+        }
+        if (args.Length == 2)
+        {
+            email = args[0];
+            username = args[1];
+        }
+        if (args.Length == 3)
+        {
+            email = args[0];
+            username = args[1];
+            password = args[2];
+        }
+
+        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit("smtp.gmail.com", email, username, password));
         Console.CancelKeyPress += new ConsoleCancelEventHandler(commandHandler.CancelKeyPress);
 
         while (true)
