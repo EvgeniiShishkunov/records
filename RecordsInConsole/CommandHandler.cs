@@ -72,7 +72,7 @@ internal class CommandHandler
         }
         else
         {
-            Console.WriteLine("Неизвестная команда: " + firstWord);
+            Console.WriteLine("Unknown command: " + firstWord);
         }
     }
 
@@ -80,7 +80,7 @@ internal class CommandHandler
     {
         if (_commandWords.Count < 2)
         {
-            Console.WriteLine("Нет содержания заметки. Используйте add \"(Ваше описание)\"");
+            Console.WriteLine("No note content. Use add \"(Your description)\"");
             return;
         }
 
@@ -88,17 +88,19 @@ internal class CommandHandler
         int endDescrIndex = _command.LastIndexOf('"');
         string recordDescription;
 
-        if (startDescrIndex != -1 && endDescrIndex != -1)
+        if (startDescrIndex != -1 && endDescrIndex != -1 && startDescrIndex != endDescrIndex)
+        {
             recordDescription = _command[(startDescrIndex + 1)..endDescrIndex];
+        }
         else
         {
-            Console.WriteLine("Описание заметки не под кавычками. Используйте add \"(Ваше описание)\"");
+            Console.WriteLine("The description of the note is not in quotes. Use add \"(Your description)\"");
             return;
         }
 
         if (recordDescription == String.Empty)
         {
-            Console.WriteLine("Напишите что-то в описании записи");
+            Console.WriteLine("Write something in the post description");
             return;
         }
 
@@ -113,17 +115,17 @@ internal class CommandHandler
 
         record.Description = recordDescription;
         _appData.AddRecord(record);
-        Console.WriteLine("Запись добавлена");
+        Console.WriteLine("Record added");
     }
 
     private void ListCommand()
     {
-        Console.WriteLine("Все записи");
+        Console.WriteLine("All records");
 
         foreach (Record record in _appData.Records)
         {
             Console.WriteLine(record.Description + "\tid: " + record.Id);
-            Console.Write("Тэги: ");
+            Console.Write("Tags: ");
             if (record.Tags != null)
             {
                 foreach (string tag in record.Tags)
@@ -140,7 +142,7 @@ internal class CommandHandler
     {
         if (_commandWords.Count < 2)
         {
-            Console.WriteLine("Не указан ID");
+            Console.WriteLine("ID not specified");
             return;
         }
 
@@ -148,7 +150,7 @@ internal class CommandHandler
 
         if (parametrWords.Any() == true)
         {
-            Console.Write("Неизвестные слова в команде: ");
+            Console.Write("Unknown command words: ");
             foreach (string parametrWord in parametrWords)
             {
                 Console.Write(parametrWord + " ");
@@ -158,17 +160,17 @@ internal class CommandHandler
 
         if (Int32.TryParse(_commandWords[1], out var id) == false)
         {
-            Console.WriteLine("ID указан в неверном формате. Используйте натуральное число");
+            Console.WriteLine("The ID is in the wrong format. Use natural number");
             return;
         }
 
         if (_appData.DeleteRecord(id) == true)
         {
-            Console.WriteLine("Запись удалена");
+            Console.WriteLine("Record removed");
         }
         else
         {
-            Console.WriteLine("Запись с данным ID не найдена");
+            Console.WriteLine("Record with given ID not found");
         }
     }
 

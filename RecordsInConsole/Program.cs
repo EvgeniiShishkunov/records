@@ -16,7 +16,7 @@ internal class Program
         }
         catch
         {
-            Console.WriteLine("Attention, mail, login and password were not entered. To send notes by mail, enter the previously mentioned data");
+            Console.WriteLine("Attention! Mail, login and password were not entered. To send notes by mail, enter the previously mentioned data");
         }
 
         CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit("smtp.gmail.com", email, username, password));
@@ -31,7 +31,7 @@ internal class Program
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Что-то пошло не так");
+                Console.WriteLine("Something went wrong");
                 Console.WriteLine(ex.ToString());
             }
 
