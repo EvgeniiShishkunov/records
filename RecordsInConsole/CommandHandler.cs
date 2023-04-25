@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -73,12 +74,22 @@ internal class CommandHandler
         }
 
         Record record = new Record();
-        HashSet<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+        HashSet<string> tags = _command[(endDescrIndex)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+
+        foreach (var tag in tags)
+        {
+            if (String.IsNullOrWhiteSpace(tag.Replace('"', ' ')))
+            {
+                Console.WriteLine("The tag consists entirely of an invalid character (\")");
+                return;
+            }
+        }
+
 
         if (tags.Any() == true)
         {
             record.Tags = tags;
-        }
+        } 
 
         record.Description = recordDescription;
         _appData.AddRecord(record);
