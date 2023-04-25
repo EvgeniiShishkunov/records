@@ -8,20 +8,15 @@ internal class Program
         string username = "";
         string password = "";
 
-        if (args.Length == 1)
-        {
-            email = args[0];
-        }
-        if (args.Length == 2)
-        {
-            email = args[0];
-            username = args[1];
-        }
-        if (args.Length == 3)
-        {
+        try
+        { 
             email = args[0];
             username = args[1];
             password = args[2];
+        }
+        catch
+        {
+            Console.WriteLine("Attention, mail, login and password were not entered. To send notes by mail, enter the previously mentioned data");
         }
 
         CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit("smtp.gmail.com", email, username, password));

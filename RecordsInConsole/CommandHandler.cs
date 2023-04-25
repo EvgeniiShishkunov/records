@@ -19,6 +19,15 @@ internal class CommandHandler
 
     public CommandHandler(AppData appData, IEmailService emailService)
     {
+        if (appData == null)
+        {
+            throw new ArgumentNullException(nameof(appData));
+        }
+        if (emailService == null)
+        {
+            throw new ArgumentNullException(nameof(emailService));
+        }
+
         _appData = appData;
         _emailService = emailService;
         _actionDelegates = new Dictionary<string, Action>()
@@ -27,21 +36,20 @@ internal class CommandHandler
             {"list", ListCommand },
             {"delete", DeleteCommand }
         };
-        _emailService = emailService;
     }
 
     public void CancelKeyPress(object sender, ConsoleCancelEventArgs args)
     {
-        Console.WriteLine("Отправка заметок на почту");
+        Console.WriteLine("Sending notes by email");
 
         bool emailSendResult = _emailService.TrySendRecords(_appData.Records.ToList());
         if (emailSendResult == true)
         {
-            Console.WriteLine("Сообщение с заметками отправлены");
+            Console.WriteLine("Message with notes was sent");
         }
         else
         {
-            Console.WriteLine("Ошибка. Сообщение с заметками не было отправлено");
+            Console.WriteLine("Error. Message with notes was not sent");
         }
         Environment.Exit(0);
     }

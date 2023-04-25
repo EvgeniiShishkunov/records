@@ -28,11 +28,17 @@ namespace RecordsInConsole
 
         public bool TrySendRecords(List<Record> records)
         {
+            if (records == null)
+            {
+                throw new ArgumentNullException(nameof(records));
+            }
+
             if (records.Any() == false) 
             {
                 Console.WriteLine("No records to sent");
                 return false;
             }
+
             if (UserName == String.Empty || Password == String.Empty || Email == String.Empty) 
             { 
                 Console.WriteLine("No username, password or email entered");
@@ -45,19 +51,20 @@ namespace RecordsInConsole
             message.Subject = "Records " + DateTime.Today.ToShortDateString();
 
             string messageTextBody = "";
+
             foreach (var record in records)
             {
-                messageTextBody += record.Description + "\n";
+                messageTextBody += record.Description + "\n\n";
             }
 
-            message.Body = new TextPart("plain")
+            message.Body = new TextPart()
             {
                 Text = messageTextBody
             };
 
             try
             {
-                using (var client = new SmtpClient(new ProtocolLogger(Console.OpenStandardOutput())))
+                using (var client = new SmtpClient())
                 {
                     client.Connect(SmtpAddress, 587, SecureSocketOptions.StartTls);
                     client.Authenticate(UserName, Password);
@@ -67,7 +74,7 @@ namespace RecordsInConsole
             }
             catch (Exception ex) 
             {
-                return false;
+                throw;
             }
 
             return true;

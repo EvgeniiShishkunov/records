@@ -15,6 +15,10 @@ internal class AppData
 
     public void AddRecord(Record record)
     {
+        if (record == null)
+        { 
+            throw new ArgumentNullException(nameof(record));
+        }
         record.Id = _assignId++;
         _records.Add(record);
     }
