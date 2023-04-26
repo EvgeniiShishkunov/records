@@ -7,6 +7,7 @@ internal class Program
         string email = "";
         string username = "";
         string password = "";
+        string smptpServerAddress = "smtp.gmail.com";
 
         try
         { 
@@ -16,11 +17,26 @@ internal class Program
         }
         catch
         {
-            Console.WriteLine("Attention! Mail, login and password were not entered. To send notes by mail, enter the previously mentioned data");
+            Console.WriteLine("Attention! Mail, login and password were not entered. To send notes by mail, enter the previously mentioned data \n");
         }
 
-        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKit("smtp.gmail.com", email, username, password));
-        Console.CancelKeyPress += new ConsoleCancelEventHandler(commandHandler.CancelKeyPress);
+        try
+        {
+            smptpServerAddress = args[3];
+        }
+        catch 
+        {
+            Console.WriteLine("You use " + smptpServerAddress + " by default \n");
+        }
+
+        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
+
+        void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)
+        {
+            commandHandler.CancelKeyPress();
+            Environment.Exit(0);
+        }
 
         while (true)
         {
@@ -34,8 +50,6 @@ internal class Program
                 Console.WriteLine("Something went wrong");
                 Console.WriteLine(ex.ToString());
             }
-
         }
-
     }
 }

@@ -10,14 +10,14 @@ namespace RecordsInConsole;
 internal class CommandHandler
 {
     private readonly AppData _appData;
-    private readonly IEmailService _emailService;
+    private readonly IRecordEmailReporter _emailService;
 
     private string _command;
     private List<string> _commandWords = new();
 
     private Dictionary<string, Action> _actionDelegates;
 
-    public CommandHandler(AppData appData, IEmailService emailService)
+    public CommandHandler(AppData appData, IRecordEmailReporter emailService)
     {
         if (appData == null)
         {
@@ -38,7 +38,7 @@ internal class CommandHandler
         };
     }
 
-    public void CancelKeyPress(object sender, ConsoleCancelEventArgs args)
+    public void CancelKeyPress()
     {
         Console.WriteLine("Sending notes by email");
 
@@ -51,12 +51,11 @@ internal class CommandHandler
         {
             Console.WriteLine("Error. Message with notes was not sent");
         }
-        Environment.Exit(0);
     }
 
     public void HandleCommand(string command)
     {
-        if (command == null || command.Replace(" ", String.Empty) == String.Empty)
+        if (command == null || command.Trim() == String.Empty)
         {
             return;
         }
@@ -84,13 +83,13 @@ internal class CommandHandler
             return;
         }
 
-        int startDescrIndex = _command.IndexOf('"');
-        int endDescrIndex = _command.LastIndexOf('"');
+        int startTextDescriptionIndex = _command.IndexOf('"');
+        int endTextDescriptionIndex = _command.LastIndexOf('"');
         string recordDescription;
 
-        if (startDescrIndex != -1 && endDescrIndex != -1 && startDescrIndex != endDescrIndex)
+        if (startTextDescriptionIndex != -1 && endTextDescriptionIndex != -1 && startTextDescriptionIndex != endTextDescriptionIndex)
         {
-            recordDescription = _command[(startDescrIndex + 1)..endDescrIndex];
+            recordDescription = _command[(startTextDescriptionIndex + 1)..endTextDescriptionIndex];
         }
         else
         {
@@ -105,7 +104,7 @@ internal class CommandHandler
         }
 
         Record record = new Record();
-        List<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+        List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         if (tags.Any() == true)
         {
@@ -173,5 +172,4 @@ internal class CommandHandler
             Console.WriteLine("Record with given ID not found");
         }
     }
-
 }
