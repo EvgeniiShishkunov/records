@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RecordsInConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "evgenii.shishkunov@gmail.com\r\nevgenii.shishkunov@gmail.com\r\\<password>"
+    }
+  }
+}
