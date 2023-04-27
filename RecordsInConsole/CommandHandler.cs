@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
@@ -106,11 +107,21 @@ internal class CommandHandler
         Record record = new Record();
         List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
+        foreach (var tag in tags)
+        {
+            var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
+            if (isStringValid == false)
+            {
+                Console.WriteLine("Incorrect tag name, use symbols and or numbers");
+                return;
+            }
+        }
+
+
         if (tags.Any() == true)
         {
-            record.Tags = new List<string>();
-            record.Tags.AddRange(tags);
-        }
+            record.Tags = tags;
+        } 
 
         record.Description = recordDescription;
         _appData.AddRecord(record);
