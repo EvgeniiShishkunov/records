@@ -4,21 +4,33 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RecordsInConsole;
 
 internal class CommandHandler
 {
     private readonly AppData _appData;
+    private readonly IRecordEmailReporter _emailService;
 
     private string _command;
     private List<string> _commandWords = new();
 
     private Dictionary<string, Action> _actionDelegates;
 
-    public CommandHandler(AppData appData)
+    public CommandHandler(AppData appData, IRecordEmailReporter emailService)
     {
+        if (appData == null)
+        {
+            throw new ArgumentNullException(nameof(appData));
+        }
+        if (emailService == null)
+        {
+            throw new ArgumentNullException(nameof(emailService));
+        }
+
         _appData = appData;
+        _emailService = emailService;
         _actionDelegates = new Dictionary<string, Action>()
         {
             {"add", AddCommand },
@@ -27,13 +39,30 @@ internal class CommandHandler
         };
     }
 
+    public void CancelKeyPress()
+    {
+        Console.WriteLine("Sending notes by email");
+
+        bool emailSendResult = _emailService.TrySendRecords(_appData.Records.ToList());
+        if (emailSendResult == true)
+        {
+            Console.WriteLine("Message with notes was sent");
+        }
+        else
+        {
+            Console.WriteLine("Error. Message with notes was not sent");
+        }
+    }
+
     public void HandleCommand(string command)
     {
+        if (command == null || command.Trim() == String.Empty)
+        {
+            return;
+        }
+
         _command = command;
         _commandWords = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-        if (_commandWords.Any() == false)
-            return;
 
         string firstWord = _commandWords[0].ToLowerInvariant();
 
@@ -43,7 +72,7 @@ internal class CommandHandler
         }
         else
         {
-            Console.WriteLine("Неизвестная команда: " + firstWord);
+            Console.WriteLine("Unknown command: " + firstWord);
         }
     }
 
@@ -51,30 +80,32 @@ internal class CommandHandler
     {
         if (_commandWords.Count < 2)
         {
-            Console.WriteLine("Нет содержания заметки. Используйте add \"(Ваше описание)\"");
+            Console.WriteLine("No note content. Use add \"(Your description)\"");
             return;
         }
 
-        int startDescrIndex = _command.IndexOf('"');
-        int endDescrIndex = _command.LastIndexOf('"');
+        int startTextDescriptionIndex = _command.IndexOf('"');
+        int endTextDescriptionIndex = _command.LastIndexOf('"');
         string recordDescription;
 
-        if (startDescrIndex != -1 && endDescrIndex != -1)
-            recordDescription = _command[(startDescrIndex + 1)..endDescrIndex];
+        if (startTextDescriptionIndex != -1 && endTextDescriptionIndex != -1 && startTextDescriptionIndex != endTextDescriptionIndex)
+        {
+            recordDescription = _command[(startTextDescriptionIndex + 1)..endTextDescriptionIndex];
+        }
         else
         {
-            Console.WriteLine("Описание заметки не под кавычками. Используйте add \"(Ваше описание)\"");
+            Console.WriteLine("The description of the note is not in quotes. Use add \"(Your description)\"");
             return;
         }
 
         if (recordDescription == String.Empty)
         {
-            Console.WriteLine("Напишите что-то в описании записи");
+            Console.WriteLine("Write something in the post description");
             return;
         }
 
         Record record = new Record();
-        HashSet<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+        List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tags)
         {
@@ -94,17 +125,17 @@ internal class CommandHandler
 
         record.Description = recordDescription;
         _appData.AddRecord(record);
-        Console.WriteLine("Запись добавлена");
+        Console.WriteLine("Record added");
     }
 
     private void ListCommand()
     {
-        Console.WriteLine("Все записи");
+        Console.WriteLine("All records");
 
         foreach (Record record in _appData.Records)
         {
             Console.WriteLine(record.Description + "\tid: " + record.Id);
-            Console.Write("Тэги: ");
+            Console.Write("Tags: ");
             if (record.Tags != null)
             {
                 foreach (string tag in record.Tags)
@@ -121,7 +152,7 @@ internal class CommandHandler
     {
         if (_commandWords.Count < 2)
         {
-            Console.WriteLine("Не указан ID");
+            Console.WriteLine("ID not specified");
             return;
         }
 
@@ -129,7 +160,7 @@ internal class CommandHandler
 
         if (parametrWords.Any() == true)
         {
-            Console.Write("Неизвестные слова в команде: ");
+            Console.Write("Unknown command words: ");
             foreach (string parametrWord in parametrWords)
             {
                 Console.Write(parametrWord + " ");
@@ -139,18 +170,17 @@ internal class CommandHandler
 
         if (Int32.TryParse(_commandWords[1], out var id) == false)
         {
-            Console.WriteLine("ID указан в неверном формате. Используйте натуральное число");
+            Console.WriteLine("The ID is in the wrong format. Use natural number");
             return;
         }
 
         if (_appData.DeleteRecord(id) == true)
         {
-            Console.WriteLine("Запись удалена");
+            Console.WriteLine("Record removed");
         }
         else
         {
-            Console.WriteLine("Запись с данным ID не найдена");
+            Console.WriteLine("Record with given ID not found");
         }
     }
-
 }
