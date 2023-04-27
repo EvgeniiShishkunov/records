@@ -74,13 +74,14 @@ internal class CommandHandler
         }
 
         Record record = new Record();
-        HashSet<string> tags = _command[(endDescrIndex)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
+        HashSet<string> tags = _command[(endDescrIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToHashSet();
 
         foreach (var tag in tags)
         {
-            if (String.IsNullOrWhiteSpace(tag.Replace('"', ' ')))
+            var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
+            if (isStringValid == false)
             {
-                Console.WriteLine("The tag consists entirely of an invalid character (\")");
+                Console.WriteLine("Incorrect tag name, use symbols and or numbers");
                 return;
             }
         }
