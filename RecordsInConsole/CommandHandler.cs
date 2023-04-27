@@ -120,7 +120,7 @@ internal class CommandHandler
 
         if (tags.Any() == true)
         {
-            record.Tags = tags;
+            record.Tags = tags.ToHashSet();
         } 
 
         record.Description = recordDescription;
