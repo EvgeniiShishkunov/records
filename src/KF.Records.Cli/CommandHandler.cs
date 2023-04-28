@@ -1,5 +1,6 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Infrastructure.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KF.Records.Infrastructure.Abstractions\KF.Records.Infrastructure.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>
