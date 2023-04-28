@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KF.Records.Cli;
+namespace KF.Records.Domain;
 
 public class Record
 {

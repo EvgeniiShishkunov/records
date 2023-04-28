@@ -1,6 +1,10 @@
 {
   "profiles": {
-    "RecordsInConsole": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "KF.Records.Cli": {
       "commandName": "Project",
       "commandLineArgs": "evgenii.shishkunov@gmail.com\r\nevgenii.shishkunov@gmail.com\r\npassword"
     }

@@ -1,4 +1,6 @@
-﻿namespace KF.Records.Cli;
+﻿using KF.Records.Infrastructure;
+
+namespace KF.Records.Cli;
 
 internal class Program
 {

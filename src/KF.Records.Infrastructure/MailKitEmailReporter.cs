@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 using MailKit;
 using MailKit.Security;
 using System.Security.Authentication;
+using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Domain;
 
-namespace KF.Records.Cli;
+namespace KF.Records.Infrastructure;
 
-internal class MailKitEmailReporter : IRecordEmailReporter
+public class MailKitEmailReporter : IRecordEmailReporter
 {
     private readonly string SmtpAddress;
     private readonly string Email;

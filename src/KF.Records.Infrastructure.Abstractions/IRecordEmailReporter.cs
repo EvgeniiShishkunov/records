@@ -1,12 +1,13 @@
-﻿using System;
+﻿using KF.Records.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KF.Records.Cli;
+namespace KF.Records.Infrastructure.Abstractions;
 
-internal interface IRecordEmailReporter
+public interface IRecordEmailReporter
 {
     bool TrySendRecords(List<Record> records);
 }
