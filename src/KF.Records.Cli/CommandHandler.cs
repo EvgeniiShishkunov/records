@@ -13,7 +13,7 @@ namespace KF.Records.Cli;
 
 internal class CommandHandler
 {
-    private readonly AppData _appData;
+    private readonly IRecordRepository _recordsRepository;
     private readonly IRecordEmailReporter _emailService;
 
     private string _command;
@@ -21,18 +21,18 @@ internal class CommandHandler
 
     private Dictionary<string, Action> _actionDelegates;
 
-    public CommandHandler(AppData appData, IRecordEmailReporter emailService)
+    public CommandHandler(IRecordRepository recordsRepository, IRecordEmailReporter emailService)
     {
-        if (appData == null)
+        if (recordsRepository == null)
         {
-            throw new ArgumentNullException(nameof(appData));
+            throw new ArgumentNullException(nameof(recordsRepository));
         }
         if (emailService == null)
         {
             throw new ArgumentNullException(nameof(emailService));
         }
 
-        _appData = appData;
+        _recordsRepository = recordsRepository;
         _emailService = emailService;
         _actionDelegates = new Dictionary<string, Action>()
         {
@@ -46,7 +46,7 @@ internal class CommandHandler
     {
         Console.WriteLine("Sending notes by email");
 
-        bool emailSendResult = _emailService.TrySendRecords(_appData.Records.ToList());
+        bool emailSendResult = _emailService.TrySendRecords(_recordsRepository.Records.ToList());
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
@@ -127,7 +127,7 @@ internal class CommandHandler
         } 
 
         record.Description = recordDescription;
-        _appData.AddRecord(record);
+        _recordsRepository.AddRecord(record);
         Console.WriteLine("Record added");
     }
 
@@ -135,7 +135,7 @@ internal class CommandHandler
     {
         Console.WriteLine("All records");
 
-        foreach (Record record in _appData.Records)
+        foreach (Record record in _recordsRepository.Records)
         {
             Console.WriteLine(record.Description + "\tid: " + record.Id);
             Console.Write("Tags: ");
@@ -177,8 +177,9 @@ internal class CommandHandler
             return;
         }
 
-        if (_appData.DeleteRecord(id) == true)
+        if (_recordsRepository.Records.FirstOrDefault(record => record.Id == id) != null)
         {
+            _recordsRepository.RemoveRecordByID(id);
             Console.WriteLine("Record removed");
         }
         else

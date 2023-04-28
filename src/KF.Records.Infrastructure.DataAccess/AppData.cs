@@ -3,6 +3,7 @@ using KF.Records.Infrastructure.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +29,9 @@ public class AppData: IRecordRepository
     public void RemoveRecordByID(int id)
     {
         var removingRecord = _records.Find(r => r.Id == id);
-        _records.Remove(removingRecord);
+        if (_records.Remove(removingRecord) == false)
+        {
+            throw new Exception();
+        }    
     }
 }
