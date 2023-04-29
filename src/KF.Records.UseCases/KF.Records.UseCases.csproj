@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Records\RemoveRecord\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\KF.Records.Infrastructure.Abstractions\KF.Records.Infrastructure.Abstractions.csproj" />
   </ItemGroup>
 

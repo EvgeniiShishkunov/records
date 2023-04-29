@@ -32,7 +32,7 @@ internal class Program
             Console.WriteLine("You use " + smptpServerAddress + " by default \n");
         }
 
-        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        CommandExecuter commandHandler = new CommandExecuter(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
         Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
 
         void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)

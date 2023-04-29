@@ -23,6 +23,7 @@ public class GetAllRecordsQueryHandler
         var records = from r in _recordRepository.Records
             select new GetRecordDto()
             {
+                Id = r.Id,
                 Description = r.Description,
                 Tags = r.Tags
             }; ;

@@ -1,7 +1,8 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
-using KF.Records.Infrastructure.DataAccess;
 using KF.Records.UseCases.Records.AddRecord;
+using KF.Records.UseCases.Records.GetAllRecords;
+using KF.Records.UseCases.Records.RemoveRecord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace KF.Records.Cli;
 
-internal class CommandHandler
+internal class CommandExecuter
 {
     private readonly IRecordRepository _recordsRepository;
     private readonly IRecordEmailReporter _emailService;
@@ -22,7 +23,7 @@ internal class CommandHandler
 
     private Dictionary<string, Action> _actionDelegates;
 
-    public CommandHandler(IRecordRepository recordsRepository, IRecordEmailReporter emailService)
+    public CommandExecuter(IRecordRepository recordsRepository, IRecordEmailReporter emailService)
     {
         if (recordsRepository == null)
         {
@@ -129,19 +130,21 @@ internal class CommandHandler
 
         record.Description = recordDescription;
 
-        //_recordsRepository.AddRecord(record);
-        //Console.WriteLine("Record added");
-
-        AddRecordCommand addRecordCommand = new() { Description = recordDescription, Tags = tags.ToHashSet() };
-        AddRecordCommandHandler addRecordCommandHandler = new(_recordsRepository);
+        var addRecordCommand = new AddRecordCommand() { Description = recordDescription, Tags = tags };
+        var addRecordCommandHandler = new AddRecordCommandHandler(_recordsRepository);
         addRecordCommandHandler.Handle(addRecordCommand);
+        Console.WriteLine("Record added");
     }
 
     private void ListCommand()
     {
         Console.WriteLine("All records");
 
-        foreach (Record record in _recordsRepository.Records)
+        var getAllRecordQuery = new GetAllRecordsQuery();
+        var getAllRecordQueryHandler = new GetAllRecordsQueryHandler(_recordsRepository);
+        var records = getAllRecordQueryHandler.Handle(getAllRecordQuery);
+
+        foreach (var record in records)
         {
             Console.WriteLine(record.Description + "\tid: " + record.Id);
             Console.Write("Tags: ");
@@ -183,12 +186,14 @@ internal class CommandHandler
             return;
         }
 
-        if (_recordsRepository.Records.FirstOrDefault(record => record.Id == id) != null)
+        try
         {
-            _recordsRepository.RemoveRecordByID(id);
+            var removeRecordCommand = new RemoveRecordCommand() { Id = id };
+            var removeRecordCommandHandler = new RemoveRecordCommandHandler(_recordsRepository);
+            removeRecordCommandHandler.Handle(removeRecordCommand);
             Console.WriteLine("Record removed");
         }
-        else
+        catch (Exception e)
         {
             Console.WriteLine("Record with given ID not found");
         }

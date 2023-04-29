@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KF.Records.UseCases.Records.RemoveRecord;
 
-internal class RemoveRecordCommandHandler
+public class RemoveRecordCommandHandler
 {
     private readonly IRecordRepository _recordRepository;
 

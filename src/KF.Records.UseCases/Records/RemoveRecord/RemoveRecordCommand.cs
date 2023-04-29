@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KF.Records.UseCases.Records.RemoveRecord;
 
-internal class RemoveRecordCommand
+public class RemoveRecordCommand
 {
     public required int Id { get; init; }
 }
