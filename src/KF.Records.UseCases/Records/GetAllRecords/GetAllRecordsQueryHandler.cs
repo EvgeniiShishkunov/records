@@ -9,24 +9,33 @@ using System.Threading.Tasks;
 
 namespace KF.Records.UseCases.Records.GetAllRecords;
 
+/// <summary>
+/// Get all records handler
+/// </summary>
 public class GetAllRecordsQueryHandler
 {
     private readonly IRecordRepository _recordRepository;
 
-    public GetAllRecordsQueryHandler (IRecordRepository recordRepository)
+    /// <summary>
+    /// Indicate database context
+    /// </summary>
+    public GetAllRecordsQueryHandler(IRecordRepository recordRepository)
     {
         _recordRepository = recordRepository;
     }
 
-    public IReadOnlyCollection<GetRecordDto> Handle (GetAllRecordsQuery request)
+    /// <summary>
+    /// Return all records from database
+    /// </summary>
+    public IReadOnlyCollection<GetRecordDto> Handle(GetAllRecordsQuery request)
     {
         var records = from r in _recordRepository.Records
-            select new GetRecordDto()
-            {
-                Id = r.Id,
-                Description = r.Description,
-                Tags = r.Tags
-            }; ;
+                      select new GetRecordDto()
+                      {
+                          Id = r.Id,
+                          Description = r.Description,
+                          Tags = r.Tags
+                      }; ;
         return records.ToList();
     }
 }

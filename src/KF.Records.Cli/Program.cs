@@ -13,7 +13,7 @@ internal class Program
         string smptpServerAddress = "smtp.gmail.com";
 
         try
-        { 
+        {
             email = args[0];
             username = args[1];
             password = args[2];
@@ -27,12 +27,12 @@ internal class Program
         {
             smptpServerAddress = args[3];
         }
-        catch 
+        catch
         {
             Console.WriteLine("You use " + smptpServerAddress + " by default \n");
         }
 
-        CommandExecuter commandHandler = new CommandExecuter(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        var commandHandler = new CommandExecuter(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
         Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
 
         void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)

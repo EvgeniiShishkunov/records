@@ -21,21 +21,12 @@ internal class CommandExecuter
     private string _command;
     private List<string> _commandWords = new();
 
-    private Dictionary<string, Action> _actionDelegates;
+    private readonly Dictionary<string, Action> _actionDelegates;
 
     public CommandExecuter(IRecordRepository recordsRepository, IRecordEmailReporter emailService)
     {
-        if (recordsRepository == null)
-        {
-            throw new ArgumentNullException(nameof(recordsRepository));
-        }
-        if (emailService == null)
-        {
-            throw new ArgumentNullException(nameof(emailService));
-        }
-
-        _recordsRepository = recordsRepository;
-        _emailService = emailService;
+        _recordsRepository = recordsRepository ?? throw new ArgumentNullException(nameof(recordsRepository));
+        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _actionDelegates = new Dictionary<string, Action>()
         {
             {"add", AddCommand },
@@ -61,7 +52,7 @@ internal class CommandExecuter
 
     public void HandleCommand(string command)
     {
-        if (command == null || command.Trim() == String.Empty)
+        if (command == null || command.Trim() == string.Empty)
         {
             return;
         }
@@ -103,13 +94,13 @@ internal class CommandExecuter
             return;
         }
 
-        if (recordDescription == String.Empty)
+        if (recordDescription == string.Empty)
         {
             Console.WriteLine("Write something in the post description");
             return;
         }
 
-        Record record = new Record();
+        var record = new Record();
         List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tags)
@@ -126,7 +117,7 @@ internal class CommandExecuter
         if (tags.Any() == true)
         {
             record.Tags = tags.ToHashSet();
-        } 
+        }
 
         record.Description = recordDescription;
 
@@ -180,7 +171,7 @@ internal class CommandExecuter
             return;
         }
 
-        if (Int32.TryParse(_commandWords[1], out var id) == false)
+        if (int.TryParse(_commandWords[1], out var id) == false)
         {
             Console.WriteLine("The ID is in the wrong format. Use natural number");
             return;
@@ -193,7 +184,7 @@ internal class CommandExecuter
             removeRecordCommandHandler.Handle(removeRecordCommand);
             Console.WriteLine("Record removed");
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("Record with given ID not found");
         }

@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 
 namespace KF.Records.Infrastructure.Abstractions;
 
+/// <summary>
+/// Represent the ability to sent records by email
+/// </summary>
 public interface IRecordEmailReporter
 {
+    /// <summary>
+    /// Return true if records have been sent
+    /// </summary>
     bool TrySendRecords(List<Record> records);
 }

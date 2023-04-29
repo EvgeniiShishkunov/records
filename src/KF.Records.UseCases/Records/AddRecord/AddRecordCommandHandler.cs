@@ -8,20 +8,31 @@ using System.Threading.Tasks;
 
 namespace KF.Records.UseCases.Records.AddRecord;
 
+/// <summary>
+/// Add record handler
+/// </summary>
 public class AddRecordCommandHandler
 {
     private readonly IRecordRepository _recordRepository;
 
-    public AddRecordCommandHandler(IRecordRepository recordRepository) 
+    /// <summary>
+    /// Indicate database context
+    /// </summary>
+    public AddRecordCommandHandler(IRecordRepository recordRepository)
     {
         _recordRepository = recordRepository;
     }
 
+    /// <summary>
+    /// Add record into databse
+    /// </summary>
     public void Handle(AddRecordCommand request)
     {
-        var record = new Record();
-        record.Description = request.Description;
-        record.Tags = request.Tags.ToHashSet();
+        var record = new Record()
+        {
+            Description = request.Description,
+            Tags = request.Tags.ToHashSet(),
+        };
         _recordRepository.AddRecord(record);
     }
 }

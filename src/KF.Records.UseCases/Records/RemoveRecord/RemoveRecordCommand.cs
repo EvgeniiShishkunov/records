@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace KF.Records.UseCases.Records.RemoveRecord;
 
+/// <summary>
+/// Remove record from data base
+/// </summary>
 public class RemoveRecordCommand
 {
+    /// <summary>
+    /// Id
+    /// </summary>
     public required int Id { get; init; }
 }

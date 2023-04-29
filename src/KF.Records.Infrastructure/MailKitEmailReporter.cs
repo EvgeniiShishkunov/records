@@ -1,18 +1,22 @@
-﻿using MimeKit;
+﻿using KF.Records.Domain;
+using KF.Records.Infrastructure.Abstractions;
+using MailKit;
 using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
-using MailKit;
-using MailKit.Security;
-using System.Security.Authentication;
-using KF.Records.Infrastructure.Abstractions;
-using KF.Records.Domain;
 
 namespace KF.Records.Infrastructure;
 
+/// <summary>
+/// Represent the ability to send notes by email
+/// </summary>
 public class MailKitEmailReporter : IRecordEmailReporter
 {
     private readonly string SmtpAddress;
@@ -20,7 +24,10 @@ public class MailKitEmailReporter : IRecordEmailReporter
     private readonly string UserName;
     private readonly string Password;
 
-    public MailKitEmailReporter(string smptAddress, string email, string username, string password) 
+    /// <summary>
+    /// Indicate smpt server address, email by send records, username and password for smpt service
+    /// </summary>
+    public MailKitEmailReporter(string smptAddress, string email, string username, string password)
     {
         SmtpAddress = smptAddress;
         Email = email;
@@ -28,6 +35,9 @@ public class MailKitEmailReporter : IRecordEmailReporter
         Password = password;
     }
 
+    /// <summary>
+    /// Return true if records have been sent
+    /// </summary>
     public bool TrySendRecords(List<Record> records)
     {
         if (records == null)
@@ -37,13 +47,11 @@ public class MailKitEmailReporter : IRecordEmailReporter
 
         if (records.Any() == false)
         {
-            Console.WriteLine("No records to sent");
             return false;
         }
 
-        if ( String.IsNullOrWhiteSpace(UserName) || String.IsNullOrWhiteSpace(Password) || String.IsNullOrWhiteSpace(Email))
-        { 
-            Console.WriteLine("Username, parssword or email not provided");
+        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Email))
+        {
             return false;
         }
 
@@ -72,9 +80,8 @@ public class MailKitEmailReporter : IRecordEmailReporter
             client.Send(message);
             client.Disconnect(true);
         }
-        catch (Exception ex) 
+        catch (Exception)
         {
-            Console.WriteLine(ex.Message);
             throw;
         }
 
