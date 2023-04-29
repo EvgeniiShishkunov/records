@@ -37,8 +37,16 @@ internal class Program
 
         void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)
         {
-            commandHandler.CancelKeyPress();
-            Environment.Exit(0);
+            try
+            {
+                commandHandler.CancelKeyPress();
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error. Message with notes was not sent");
+                Console.WriteLine(ex.Message);
+            }
         }
 
         while (true)
@@ -51,7 +59,7 @@ internal class Program
             catch (Exception ex)
             {
                 Console.WriteLine("Something went wrong");
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
             }
         }
     }
