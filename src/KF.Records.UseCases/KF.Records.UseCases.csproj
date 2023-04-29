@@ -3,7 +3,16 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet>..\..\tools\Saritasa.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-</Project>
+  <ItemGroup>
+    <Folder Include="Records\RemoveRecord\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KF.Records.Infrastructure.Abstractions\KF.Records.Infrastructure.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>  

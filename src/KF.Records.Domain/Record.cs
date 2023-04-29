@@ -9,6 +9,8 @@ namespace KF.Records.Domain;
 public class Record
 {
     public int Id { get; set; }
+
     public string Description { get; set; }
+
     public HashSet<string> Tags { get; set; }
 }

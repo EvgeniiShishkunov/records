@@ -35,7 +35,7 @@ public class MailKitEmailReporter : IRecordEmailReporter
             throw new ArgumentNullException(nameof(records));
         }
 
-        if (records.Any() == false) 
+        if (records.Any() == false)
         {
             Console.WriteLine("No records to sent");
             return false;

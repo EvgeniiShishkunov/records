@@ -1,6 +1,7 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
 using KF.Records.Infrastructure.DataAccess;
+using KF.Records.UseCases.Records.AddRecord;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -127,8 +128,13 @@ internal class CommandHandler
         } 
 
         record.Description = recordDescription;
-        _recordsRepository.AddRecord(record);
-        Console.WriteLine("Record added");
+
+        //_recordsRepository.AddRecord(record);
+        //Console.WriteLine("Record added");
+
+        AddRecordCommand addRecordCommand = new() { Description = recordDescription, Tags = tags.ToHashSet() };
+        AddRecordCommandHandler addRecordCommandHandler = new(_recordsRepository);
+        addRecordCommandHandler.Handle(addRecordCommand);
     }
 
     private void ListCommand()
