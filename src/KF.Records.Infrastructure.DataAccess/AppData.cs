@@ -14,13 +14,13 @@ namespace KF.Records.Infrastructure.DataAccess;
 /// </summary>
 public class AppData : IRecordRepository
 {
+    private readonly List<Record> _records = new();
+    private int _assignId;
+
     /// <summary>
     /// Represent readonly records
     /// </summary>
     public IReadOnlyCollection<Record> Records => _records;
-    private readonly List<Record> _records = new();
-
-    private int _assignId;
 
     /// <summary>
     /// Add record into database
@@ -38,7 +38,7 @@ public class AppData : IRecordRepository
     /// <summary>
     /// Remove  record from database by id
     /// </summary>
-    public void RemoveRecordByID(int id)
+    public void RemoveRecordById(int id)
     {
         var removingRecord = _records.Find(r => r.Id == id);
         if (_records.Remove(removingRecord) == false)

@@ -100,7 +100,7 @@ internal class CommandExecuter
             return;
         }
 
-        var record = new Record();
+        var record = new Record() { Description  = ""};
         List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tags)

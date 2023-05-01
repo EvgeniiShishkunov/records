@@ -19,10 +19,10 @@ public class Record
     /// <summary>
     /// Record Description.
     /// </summary>
-    public string Description { get; set; }
+    required public string Description { get; set; }
 
     /// <summary>
     /// Record tags.
     /// </summary>
-    public HashSet<string> Tags { get; set; }
+    public HashSet<string> Tags { get; set; } = new HashSet<string>();
 }

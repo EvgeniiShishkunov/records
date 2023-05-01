@@ -33,6 +33,16 @@ public class AddRecordCommandHandler
             Description = request.Description,
             Tags = request.Tags.ToHashSet(),
         };
+
+        foreach (var tag in request.Tags)
+        {
+            var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
+            if (isStringValid == false)
+            {
+                throw new ArgumentException("Incorrect tag name, use symbols and or numbers");
+            }
+        }
+
         _recordRepository.AddRecord(record);
     }
 }

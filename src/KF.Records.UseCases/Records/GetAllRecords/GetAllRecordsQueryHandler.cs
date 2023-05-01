@@ -29,13 +29,12 @@ public class GetAllRecordsQueryHandler
     /// </summary>
     public IReadOnlyCollection<GetRecordDto> Handle(GetAllRecordsQuery request)
     {
-        var records = from r in _recordRepository.Records
-                      select new GetRecordDto()
-                      {
-                          Id = r.Id,
-                          Description = r.Description,
-                          Tags = r.Tags
-                      }; ;
+        var records = _recordRepository.Records.Select(record => new GetRecordDto()
+        {
+            Id = record.Id,
+            Description = record.Description,
+            Tags = record.Tags
+        });
         return records.ToList();
     }
 }

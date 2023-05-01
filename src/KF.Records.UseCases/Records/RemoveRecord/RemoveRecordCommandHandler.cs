@@ -27,6 +27,6 @@ public class RemoveRecordCommandHandler
     /// </summary>
     public void Handle(RemoveRecordCommand request)
     {
-        _recordRepository.RemoveRecordByID(request.Id);
+        _recordRepository.RemoveRecordById(request.Id);
     }
 }
