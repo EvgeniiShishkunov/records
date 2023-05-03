@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// <summary>
 /// Remove record from data base
 /// </summary>
-public class RemoveRecordCommand
+public class RemoveRecordCommand: IRequest
 {
     /// <summary>
     /// Id

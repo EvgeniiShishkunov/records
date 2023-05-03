@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,6 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// <summary>
 /// Parametrs for getting reacords
 /// </summary>
-public class GetAllRecordsQuery
+public class GetAllRecordsQuery: IRequest <List<GetRecordDto>>
 {
 }

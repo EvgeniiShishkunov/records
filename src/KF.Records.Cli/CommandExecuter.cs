@@ -123,7 +123,7 @@ internal class CommandExecuter
 
         var addRecordCommand = new AddRecordCommand() { Description = recordDescription, Tags = tags };
         var addRecordCommandHandler = new AddRecordCommandHandler(_recordsRepository);
-        addRecordCommandHandler.Handle(addRecordCommand);
+        addRecordCommandHandler.Handle(addRecordCommand, new CancellationToken());
         Console.WriteLine("Record added");
     }
 
@@ -133,7 +133,7 @@ internal class CommandExecuter
 
         var getAllRecordQuery = new GetAllRecordsQuery();
         var getAllRecordQueryHandler = new GetAllRecordsQueryHandler(_recordsRepository);
-        var records = getAllRecordQueryHandler.Handle(getAllRecordQuery);
+        var records = getAllRecordQueryHandler.Handle(getAllRecordQuery, new CancellationToken()).Result;
 
         foreach (var record in records)
         {
@@ -181,7 +181,7 @@ internal class CommandExecuter
         {
             var removeRecordCommand = new RemoveRecordCommand() { Id = id };
             var removeRecordCommandHandler = new RemoveRecordCommandHandler(_recordsRepository);
-            removeRecordCommandHandler.Handle(removeRecordCommand);
+            removeRecordCommandHandler.Handle(removeRecordCommand, new CancellationToken());
             Console.WriteLine("Record removed");
         }
         catch (Exception)

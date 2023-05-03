@@ -1,5 +1,6 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// <summary>
 /// Add record handler
 /// </summary>
-public class AddRecordCommandHandler
+public class AddRecordCommandHandler: IRequestHandler<AddRecordCommand>
 {
     private readonly IRecordRepository _recordRepository;
 
@@ -26,7 +27,7 @@ public class AddRecordCommandHandler
     /// <summary>
     /// Add record into databse
     /// </summary>
-    public void Handle(AddRecordCommand request)
+    public Task Handle(AddRecordCommand request, CancellationToken cancellationToken)
     {
         var record = new Record()
         {
@@ -44,5 +45,6 @@ public class AddRecordCommandHandler
         }
 
         _recordRepository.AddRecord(record);
+        return Task.CompletedTask;
     }
 }

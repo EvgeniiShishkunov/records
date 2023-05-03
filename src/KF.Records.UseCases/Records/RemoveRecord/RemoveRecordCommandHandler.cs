@@ -1,4 +1,5 @@
 ﻿using KF.Records.Infrastructure.Abstractions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// <summary>
 /// Remove record handler
 /// </summary>
-public class RemoveRecordCommandHandler
+public class RemoveRecordCommandHandler: IRequestHandler<RemoveRecordCommand>
 {
     private readonly IRecordRepository _recordRepository;
 
@@ -25,8 +26,9 @@ public class RemoveRecordCommandHandler
     /// <summary>
     /// Reamove record from database. Indicate record id
     /// </summary>
-    public void Handle(RemoveRecordCommand request)
+    public Task Handle(RemoveRecordCommand request, CancellationToken cancellationToken)
     {
         _recordRepository.RemoveRecordById(request.Id);
+        return Task.CompletedTask;
     }
 }
