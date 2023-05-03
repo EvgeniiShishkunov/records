@@ -1,4 +1,7 @@
-﻿namespace RecordsInConsole;
+﻿using KF.Records.Infrastructure;
+using KF.Records.Infrastructure.DataAccess;
+
+namespace KF.Records.Cli;
 
 internal class Program
 {
@@ -10,7 +13,7 @@ internal class Program
         string smptpServerAddress = "smtp.gmail.com";
 
         try
-        { 
+        {
             email = args[0];
             username = args[1];
             password = args[2];
@@ -24,18 +27,26 @@ internal class Program
         {
             smptpServerAddress = args[3];
         }
-        catch 
+        catch
         {
             Console.WriteLine("You use " + smptpServerAddress + " by default \n");
         }
 
-        CommandHandler commandHandler = new CommandHandler(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        var commandHandler = new CommandExecuter(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
         Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
 
         void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)
         {
-            commandHandler.CancelKeyPress();
-            Environment.Exit(0);
+            try
+            {
+                commandHandler.CancelKeyPress();
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error. Message with notes was not sent");
+                Console.WriteLine(ex.Message);
+            }
         }
 
         while (true)
@@ -48,7 +59,7 @@ internal class Program
             catch (Exception ex)
             {
                 Console.WriteLine("Something went wrong");
-                Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
             }
         }
     }

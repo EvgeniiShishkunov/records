@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "RecordsInConsole": {
+    "KF.Records.Cli": {
       "commandName": "Project",
       "commandLineArgs": "evgenii.shishkunov@gmail.com\r\nevgenii.shishkunov@gmail.com\r\npassword"
     }

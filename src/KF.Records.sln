@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.Domain", "KF.Records.Domain\KF.Records.Domain.csproj", "{0972A0FD-A9E7-4614-9F2D-32CC8928E22D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.Infrastructure.Abstractions", "KF.Records.Infrastructure.Abstractions\KF.Records.Infrastructure.Abstractions.csproj", "{345AE639-6799-49AE-8665-6E9608D9B5E0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.UseCases", "KF.Records.UseCases\KF.Records.UseCases.csproj", "{4FA64BC6-8022-4F7A-9613-8AA6DC837502}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.Infrastructure", "KF.Records.Infrastructure\KF.Records.Infrastructure.csproj", "{CACD5655-7882-4004-A0C3-942A13EE6875}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.Infrastructure.DataAccess", "KF.Records.Infrastructure.DataAccess\KF.Records.Infrastructure.DataAccess.csproj", "{DFF23E69-356C-4D02-ADFD-B4B701B65581}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KF.Records.Cli", "KF.Records.Cli\KF.Records.Cli.csproj", "{486D03E7-F40E-4988-8B8E-D9633B44A142}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0972A0FD-A9E7-4614-9F2D-32CC8928E22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0972A0FD-A9E7-4614-9F2D-32CC8928E22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0972A0FD-A9E7-4614-9F2D-32CC8928E22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0972A0FD-A9E7-4614-9F2D-32CC8928E22D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{345AE639-6799-49AE-8665-6E9608D9B5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{345AE639-6799-49AE-8665-6E9608D9B5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{345AE639-6799-49AE-8665-6E9608D9B5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{345AE639-6799-49AE-8665-6E9608D9B5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FA64BC6-8022-4F7A-9613-8AA6DC837502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FA64BC6-8022-4F7A-9613-8AA6DC837502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FA64BC6-8022-4F7A-9613-8AA6DC837502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FA64BC6-8022-4F7A-9613-8AA6DC837502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CACD5655-7882-4004-A0C3-942A13EE6875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CACD5655-7882-4004-A0C3-942A13EE6875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CACD5655-7882-4004-A0C3-942A13EE6875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CACD5655-7882-4004-A0C3-942A13EE6875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFF23E69-356C-4D02-ADFD-B4B701B65581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF23E69-356C-4D02-ADFD-B4B701B65581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF23E69-356C-4D02-ADFD-B4B701B65581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF23E69-356C-4D02-ADFD-B4B701B65581}.Release|Any CPU.Build.0 = Release|Any CPU
+		{486D03E7-F40E-4988-8B8E-D9633B44A142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{486D03E7-F40E-4988-8B8E-D9633B44A142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{486D03E7-F40E-4988-8B8E-D9633B44A142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{486D03E7-F40E-4988-8B8E-D9633B44A142}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3C2604EF-1AF6-4567-8648-5C8A77EED563}
+	EndGlobalSection
+EndGlobal

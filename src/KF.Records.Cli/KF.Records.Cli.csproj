@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <CodeAnalysisRuleSet>..\..\tools\Saritasa.ruleset</CodeAnalysisRuleSet>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KF.Records.Infrastructure.DataAccess\KF.Records.Infrastructure.DataAccess.csproj" />
+    <ProjectReference Include="..\KF.Records.Infrastructure\KF.Records.Infrastructure.csproj" />
+    <ProjectReference Include="..\KF.Records.UseCases\KF.Records.UseCases.csproj" />
+  </ItemGroup>
+    
+</Project>
