@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\KF.Records.Infrastructure.Abstractions\KF.Records.Infrastructure.Abstractions.csproj" />
   </ItemGroup>
 
