@@ -12,7 +12,7 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// <summary>
 /// Add record handler
 /// </summary>
-public class AddRecordCommandHandler: IRequestHandler<AddRecordCommand>
+public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 {
     private readonly IRecordRepository _recordRepository;
 

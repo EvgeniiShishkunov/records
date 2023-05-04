@@ -13,7 +13,7 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// <summary>
 /// Get all records handler
 /// </summary>
-public class GetAllRecordsQueryHandler: IRequestHandler<GetAllRecordsQuery, List<GetRecordDto>>
+public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, List<GetRecordDto>>
 {
     private readonly IRecordRepository _recordRepository;
 

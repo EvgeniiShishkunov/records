@@ -10,7 +10,7 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// <summary>
 /// Parametrs for adding record
 /// </summary>
-public class AddRecordCommand: IRequest
+public class AddRecordCommand : IRequest
 {
     /// <summary>
     /// Record description

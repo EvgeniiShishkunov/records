@@ -11,7 +11,7 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// <summary>
 /// Remove record handler
 /// </summary>
-public class RemoveRecordCommandHandler: IRequestHandler<RemoveRecordCommand>
+public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
 {
     private readonly IRecordRepository _recordRepository;
 

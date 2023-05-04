@@ -10,7 +10,7 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// <summary>
 /// Remove record from data base
 /// </summary>
-public class RemoveRecordCommand: IRequest
+public class RemoveRecordCommand : IRequest
 {
     /// <summary>
     /// Id

@@ -3,6 +3,7 @@ using KF.Records.Infrastructure.Abstractions;
 using KF.Records.UseCases.Records.AddRecord;
 using KF.Records.UseCases.Records.GetAllRecords;
 using KF.Records.UseCases.Records.RemoveRecord;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,18 @@ internal class CommandExecuter
 {
     private readonly IRecordRepository _recordsRepository;
     private readonly IRecordEmailReporter _emailService;
+    private readonly IMediator _mediator;
 
     private string _command;
     private List<string> _commandWords = new();
 
     private readonly Dictionary<string, Action> _actionDelegates;
 
-    public CommandExecuter(IRecordRepository recordsRepository, IRecordEmailReporter emailService)
+    public CommandExecuter(IRecordRepository recordsRepository, IRecordEmailReporter emailService, IMediator mediator)
     {
         _recordsRepository = recordsRepository ?? throw new ArgumentNullException(nameof(recordsRepository));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _actionDelegates = new Dictionary<string, Action>()
         {
             {"add", AddCommand },
@@ -100,7 +103,7 @@ internal class CommandExecuter
             return;
         }
 
-        var record = new Record() { Description  = "", Tags = new HashSet<string>()};
+        var record = new Record() { Description = "", Tags = new HashSet<string>() };
         List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tags)
@@ -122,18 +125,16 @@ internal class CommandExecuter
         record.Description = recordDescription;
 
         var addRecordCommand = new AddRecordCommand() { Description = recordDescription, Tags = tags };
-        var addRecordCommandHandler = new AddRecordCommandHandler(_recordsRepository);
-        addRecordCommandHandler.Handle(addRecordCommand, new CancellationToken());
+        _mediator.Send(addRecordCommand);
+
         Console.WriteLine("Record added");
     }
 
     private void ListCommand()
     {
         Console.WriteLine("All records");
-
-        var getAllRecordQuery = new GetAllRecordsQuery();
-        var getAllRecordQueryHandler = new GetAllRecordsQueryHandler(_recordsRepository);
-        var records = getAllRecordQueryHandler.Handle(getAllRecordQuery, new CancellationToken()).Result;
+        var getAllRecordsQuery = new GetAllRecordsQuery();
+        var records = _mediator.Send(getAllRecordsQuery).Result;
 
         foreach (var record in records)
         {
@@ -180,8 +181,7 @@ internal class CommandExecuter
         try
         {
             var removeRecordCommand = new RemoveRecordCommand() { Id = id };
-            var removeRecordCommandHandler = new RemoveRecordCommandHandler(_recordsRepository);
-            removeRecordCommandHandler.Handle(removeRecordCommand, new CancellationToken());
+            _mediator.Send(removeRecordCommand);
             Console.WriteLine("Record removed");
         }
         catch (Exception)
