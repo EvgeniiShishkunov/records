@@ -13,7 +13,7 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// <summary>
 /// Get all records handler
 /// </summary>
-public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, List<GetRecordDto>>
+public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, IList<GetRecordDto>>
 {
     private readonly IRecordRepository _recordRepository;
 
@@ -28,7 +28,7 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, Lis
     /// <summary>
     /// Return all records from database
     /// </summary>
-    public Task<List<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
+    public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         var records = _recordRepository.Records.Select(record => new GetRecordDto()
         {
@@ -36,6 +36,6 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, Lis
             Description = record.Description,
             Tags = record.Tags
         });
-        return Task.FromResult(records.ToList());
+        return Task.FromResult((IList<GetRecordDto>) records.ToList());
     }
 }

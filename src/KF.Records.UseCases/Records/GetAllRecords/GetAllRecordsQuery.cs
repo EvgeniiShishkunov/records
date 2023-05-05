@@ -10,6 +10,6 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// <summary>
 /// Parametrs for getting reacords
 /// </summary>
-public class GetAllRecordsQuery : IRequest<List<GetRecordDto>>
+public class GetAllRecordsQuery : IRequest<IList<GetRecordDto>>
 {
 }

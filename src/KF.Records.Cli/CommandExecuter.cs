@@ -75,7 +75,7 @@ internal class CommandExecuter
         }
     }
 
-    private void AddCommand()
+    private async void AddCommand()
     {
         if (_commandWords.Count < 2)
         {
@@ -125,16 +125,16 @@ internal class CommandExecuter
         record.Description = recordDescription;
 
         var addRecordCommand = new AddRecordCommand() { Description = recordDescription, Tags = tags };
-        _mediator.Send(addRecordCommand);
+        await _mediator.Send(addRecordCommand);
 
         Console.WriteLine("Record added");
     }
 
-    private void ListCommand()
+    private async void ListCommand()
     {
         Console.WriteLine("All records");
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var records = _mediator.Send(getAllRecordsQuery).Result;
+        var records = await _mediator.Send(getAllRecordsQuery);
 
         foreach (var record in records)
         {
@@ -152,7 +152,7 @@ internal class CommandExecuter
         }
     }
 
-    private void DeleteCommand()
+    private async void DeleteCommand()
     {
         if (_commandWords.Count < 2)
         {
@@ -181,7 +181,7 @@ internal class CommandExecuter
         try
         {
             var removeRecordCommand = new RemoveRecordCommand() { Id = id };
-            _mediator.Send(removeRecordCommand);
+            await _mediator.Send(removeRecordCommand);
             Console.WriteLine("Record removed");
         }
         catch (Exception)
