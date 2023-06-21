@@ -37,7 +37,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 
         foreach (var tag in request.Tags)
         {
-            var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
+            var isStringValid = tag.Name.All(symbol => char.IsLetterOrDigit(symbol) == true);
             if (isStringValid == false)
             {
                 throw new ArgumentException("Incorrect tag name, use symbols and or numbers");

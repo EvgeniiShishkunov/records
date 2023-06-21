@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using KF.Records.Domain;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,5 @@ public class AddRecordCommand : IRequest
     /// <summary>
     /// Record tags
     /// </summary>
-    public required IReadOnlyCollection<string> Tags { get; init; }
+    public required IReadOnlyCollection<Tag> Tags { get; init; }
 }
