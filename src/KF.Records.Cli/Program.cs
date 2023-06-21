@@ -1,5 +1,7 @@
 ﻿using KF.Records.Infrastructure;
+using KF.Records.Infrastructure.Abstractions;
 using KF.Records.Infrastructure.DataAccess;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KF.Records.Cli;
 
@@ -32,14 +34,22 @@ internal class Program
             Console.WriteLine("You use " + smptpServerAddress + " by default \n");
         }
 
-        var commandHandler = new CommandExecuter(new AppData(), new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        var serviceCollection = new ServiceCollection();
+        serviceCollection.AddTransient<IRecordEmailReporter, MailKitEmailReporter>(provider => new MailKitEmailReporter(smptpServerAddress, email, username, password));
+        serviceCollection.AddSingleton<IRecordRepository, AppData>();
+        serviceCollection.AddSingleton<CommandExecuter>();
+        serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(KF.Records.UseCases.Records.AddRecord.AddRecordCommand).Assembly));
+
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var commandExecuter = serviceProvider.GetService<CommandExecuter>();
         Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
 
         void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)
         {
             try
             {
-                commandHandler.CancelKeyPress();
+                commandExecuter.CancelKeyPress();
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -53,7 +63,7 @@ internal class Program
         {
             try
             {
-                commandHandler.HandleCommand(Console.ReadLine());
+                commandExecuter.HandleCommand(Console.ReadLine());
                 Console.WriteLine();
             }
             catch (Exception ex)

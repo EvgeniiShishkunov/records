@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// <summary>
 /// Parametrs for adding record
 /// </summary>
-public class AddRecordCommand
+public class AddRecordCommand : IRequest
 {
     /// <summary>
     /// Record description

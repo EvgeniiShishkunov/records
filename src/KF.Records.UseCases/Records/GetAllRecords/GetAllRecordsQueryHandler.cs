@@ -1,5 +1,6 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +13,11 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// <summary>
 /// Get all records handler
 /// </summary>
-public class GetAllRecordsQueryHandler
+public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, IList<GetRecordDto>>
 {
     private readonly IRecordRepository _recordRepository;
 
-    /// <summary>
+    /// <summary>   
     /// Indicate database context
     /// </summary>
     public GetAllRecordsQueryHandler(IRecordRepository recordRepository)
@@ -27,7 +28,7 @@ public class GetAllRecordsQueryHandler
     /// <summary>
     /// Return all records from database
     /// </summary>
-    public IReadOnlyCollection<GetRecordDto> Handle(GetAllRecordsQuery request)
+    public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         var records = _recordRepository.Records.Select(record => new GetRecordDto()
         {
@@ -35,6 +36,6 @@ public class GetAllRecordsQueryHandler
             Description = record.Description,
             Tags = record.Tags
         });
-        return records.ToList();
+        return Task.FromResult((IList<GetRecordDto>) records.ToList());
     }
 }
