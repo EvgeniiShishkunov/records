@@ -39,6 +39,7 @@ internal class Program
         serviceCollection.AddSingleton<IRecordRepository, AppData>();
         serviceCollection.AddSingleton<CommandExecuter>();
         serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(KF.Records.UseCases.Records.AddRecord.AddRecordCommand).Assembly));
+        serviceCollection.AddScoped<IReadWriteDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
