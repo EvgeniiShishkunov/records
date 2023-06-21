@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KF.Records.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,5 +23,5 @@ public class GetRecordDto
     /// <summary>
     /// Record tags
     /// </summary>
-    public required IReadOnlyCollection<string> Tags { get; init; }
+    public required IReadOnlyCollection<Tag> Tags { get; init; }
 }

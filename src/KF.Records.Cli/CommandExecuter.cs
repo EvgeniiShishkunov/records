@@ -103,7 +103,7 @@ internal class CommandExecuter
             return;
         }
 
-        var record = new Record() { Description = "", Tags = new HashSet<string>() };
+        var record = new Record() { Description = "", Tags = new HashSet<Tag>() };
         List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tags)
@@ -119,12 +119,16 @@ internal class CommandExecuter
 
         if (tags.Any() == true)
         {
-            record.Tags = tags.ToHashSet();
+            record.Tags = new HashSet<Tag>();
+            foreach (var tag in tags)
+            {
+                record.Tags.Add(new Tag() { Name = tag });
+            }
         }
 
         record.Description = recordDescription;
 
-        var addRecordCommand = new AddRecordCommand() { Description = recordDescription, Tags = tags };
+        var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags };
         await _mediator.Send(addRecordCommand);
 
         Console.WriteLine("Record added");
@@ -142,9 +146,9 @@ internal class CommandExecuter
             Console.Write("Tags: ");
             if (record.Tags != null)
             {
-                foreach (string tag in record.Tags)
+                foreach (var tag in record.Tags)
                 {
-                    Console.Write(tag + " ");
+                    Console.Write(tag.Name + " ");
                 }
             }
             Console.WriteLine();

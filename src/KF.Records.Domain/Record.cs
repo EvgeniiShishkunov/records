@@ -24,5 +24,5 @@ public class Record
     /// <summary>
     /// Record tags.
     /// </summary>
-    required public HashSet<string> Tags { get; set; } = new HashSet<string>();
+    required public HashSet<Tag> Tags { get; set; } = new HashSet<Tag>();
 }
