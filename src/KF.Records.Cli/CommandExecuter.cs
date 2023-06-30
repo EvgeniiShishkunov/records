@@ -128,7 +128,7 @@ internal class CommandExecuter
 
         record.Description = recordDescription;
 
-        var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags };
+        var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags.ToList() };
         await _mediator.Send(addRecordCommand);
 
         Console.WriteLine("Record added");

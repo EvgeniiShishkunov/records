@@ -34,7 +34,7 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
         {
             Id = record.Id,
             Description = record.Description,
-            Tags = record.Tags
+            Tags = record.Tags.ToList()
         });
         return Task.FromResult((IList<GetRecordDto>) records.ToList());
     }
