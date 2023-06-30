@@ -36,6 +36,6 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
             Description = record.Description,
             Tags = record.Tags.ToList()
         });
-        return Task.FromResult((IList<GetRecordDto>) records.ToList());
+        return Task.FromResult((IList<GetRecordDto>)records.ToList());
     }
 }

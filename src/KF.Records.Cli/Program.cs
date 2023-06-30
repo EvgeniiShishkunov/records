@@ -39,8 +39,7 @@ internal class Program
 
         var serviceCollection = new ServiceCollection();
         var builder = new ConfigurationBuilder();
-        builder.SetBasePath(Directory.GetCurrentDirectory()+"/Properties")
-               .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        builder.SetBasePath(Directory.GetCurrentDirectory() + "/Properties").AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         IConfiguration config = builder.Build();
 
         serviceCollection.AddTransient<IRecordEmailReporter, MailKitEmailReporter>(provider => new MailKitEmailReporter(smptpServerAddress, email, username, password));

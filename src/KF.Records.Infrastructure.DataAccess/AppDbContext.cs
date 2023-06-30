@@ -15,7 +15,7 @@ namespace KF.Records.Infrastructure.DataAccess;
 /// </summary>
 public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         Database.EnsureDeleted();
         Database.EnsureCreated();
@@ -45,7 +45,7 @@ public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
             else
             {
                 atachedTags.Add(tag);
-            }    
+            }
         }
         record.Tags = atachedTags;
         Records.Add(record);
