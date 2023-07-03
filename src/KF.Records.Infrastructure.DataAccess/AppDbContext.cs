@@ -15,6 +15,9 @@ namespace KF.Records.Infrastructure.DataAccess;
 /// </summary>
 public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
 {
+    /// <summary>
+    /// Indicate database connection options
+    /// </summary>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         Database.EnsureCreated();
@@ -24,6 +27,9 @@ public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
     /// Provide access to records in database
     /// </summary>
     public DbSet<Record> Records { get; set; }
+    /// <summary>
+    /// Provide access to tags in database
+    /// </summary>
     public DbSet<Tag> Tags { get; set; }
 
     IReadOnlyCollection<Record> IRecordRepository.Records => Records.ToList();
@@ -33,7 +39,7 @@ public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
     /// </summary>
     public void AddRecord(Record record)
     {
-        List<Tag> atachedTags = new List<Tag>();
+        var atachedTags = new List<Tag>();
         foreach (var tag in record.Tags)
         {
             var exiistingTag = Tags.FirstOrDefault(t => t.Name == tag.Name);
