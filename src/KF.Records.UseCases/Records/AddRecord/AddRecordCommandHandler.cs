@@ -14,14 +14,14 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// </summary>
 public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 {
-    private readonly IRecordRepository _recordRepository;
+    private readonly IReadWriteDbContext _readWriteDbContext;
 
     /// <summary>
     /// Indicate database context
     /// </summary>
-    public AddRecordCommandHandler(IRecordRepository recordRepository)
+    public AddRecordCommandHandler(IReadWriteDbContext readWriteDbContext)
     {
-        _recordRepository = recordRepository;
+        _readWriteDbContext = readWriteDbContext;
     }
 
     /// <summary>
@@ -29,22 +29,30 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
     /// </summary>
     public Task Handle(AddRecordCommand request, CancellationToken cancellationToken)
     {
-        var record = new Record()
-        {
-            Description = request.Description,
-            Tags = request.Tags.ToHashSet(),
-        };
-
         foreach (var tag in request.Tags)
         {
-            var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
+            var isStringValid = tag.Name.All(symbol => char.IsLetterOrDigit(symbol) == true);
             if (isStringValid == false)
             {
                 throw new ArgumentException("Incorrect tag name, use symbols and or numbers");
             }
         }
 
-        _recordRepository.AddRecord(record);
+        var atachedTags = new List<Tag>();
+        var tagNames = request.Tags.Select(tag => tag.Name);
+        var existingTags = _readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToList();
+        var existingTagNames = existingTags.Select(t => t.Name).ToList();
+        var newTags = request.Tags.Where(t => !existingTagNames.Contains(t.Name))
+            .Select(t => new Tag() { Name = t.Name });
+
+        var record = new Record()
+        {
+            Description = request.Description,
+            Tags = existingTags.Union(newTags).ToList(),
+        };
+
+        _readWriteDbContext.Records.Add(record);
+        _readWriteDbContext.SaveChanges();
         return Task.CompletedTask;
     }
 }

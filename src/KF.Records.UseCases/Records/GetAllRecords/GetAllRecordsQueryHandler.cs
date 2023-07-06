@@ -15,14 +15,14 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// </summary>
 public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, IList<GetRecordDto>>
 {
-    private readonly IRecordRepository _recordRepository;
+    private readonly IReadWriteDbContext _readWriteDbContext;
 
     /// <summary>   
     /// Indicate database context
     /// </summary>
-    public GetAllRecordsQueryHandler(IRecordRepository recordRepository)
+    public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext)
     {
-        _recordRepository = recordRepository;
+        _readWriteDbContext = readWriteDbContext;
     }
 
     /// <summary>
@@ -30,12 +30,13 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     /// </summary>
     public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
-        var records = _recordRepository.Records.Select(record => new GetRecordDto()
+        var records = _readWriteDbContext.Records.Select(record => new GetRecordDto()
         {
             Id = record.Id,
             Description = record.Description,
-            Tags = record.Tags
+            Tags = record.Tags.ToList()
         });
-        return Task.FromResult((IList<GetRecordDto>) records.ToList());
+        _readWriteDbContext.SaveChanges();
+        return Task.FromResult((IList<GetRecordDto>)records.ToList());
     }
 }

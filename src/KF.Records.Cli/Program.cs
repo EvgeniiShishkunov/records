@@ -1,6 +1,8 @@
 ﻿using KF.Records.Infrastructure;
 using KF.Records.Infrastructure.Abstractions;
 using KF.Records.Infrastructure.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace KF.Records.Cli;
@@ -35,10 +37,15 @@ internal class Program
         }
 
         var serviceCollection = new ServiceCollection();
+        var builder = new ConfigurationBuilder();
+        builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        IConfiguration config = builder.Build();
+
         serviceCollection.AddTransient<IRecordEmailReporter, MailKitEmailReporter>(provider => new MailKitEmailReporter(smptpServerAddress, email, username, password));
-        serviceCollection.AddSingleton<IRecordRepository, AppData>();
         serviceCollection.AddSingleton<CommandExecuter>();
         serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(KF.Records.UseCases.Records.AddRecord.AddRecordCommand).Assembly));
+        serviceCollection.AddScoped<IReadWriteDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+        serviceCollection.AddDbContext<AppDbContext>(options => options.UseNpgsql(config.GetSection("ConnectionStrings").GetSection("Default").Value));
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
