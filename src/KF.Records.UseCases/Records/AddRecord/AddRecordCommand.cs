@@ -20,5 +20,5 @@ public class AddRecordCommand : IRequest
     /// <summary>
     /// Record tags
     /// </summary>
-    public required IReadOnlyCollection<Tag> Tags { get; init; }
+    public required IReadOnlyCollection<AddTagDto> Tags { get; init; }
 }

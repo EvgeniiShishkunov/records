@@ -16,7 +16,6 @@ namespace KF.Records.Cli;
 
 internal class CommandExecuter
 {
-    private readonly IRecordRepository _recordsRepository;
     private readonly IRecordEmailReporter _emailService;
     private readonly IMediator _mediator;
 
@@ -25,9 +24,8 @@ internal class CommandExecuter
 
     private readonly Dictionary<string, Action> _actionDelegates;
 
-    public CommandExecuter(IRecordRepository recordsRepository, IRecordEmailReporter emailService, IMediator mediator)
+    public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator)
     {
-        _recordsRepository = recordsRepository ?? throw new ArgumentNullException(nameof(recordsRepository));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _actionDelegates = new Dictionary<string, Action>()
@@ -38,11 +36,14 @@ internal class CommandExecuter
         };
     }
 
-    public void CancelKeyPress()
+    public async void CancelKeyPress()
     {
         Console.WriteLine("Sending notes by email");
 
-        bool emailSendResult = _emailService.TrySendRecords(_recordsRepository.Records.ToList());
+        var getAllRecordsQuery = new GetAllRecordsQuery();
+        var records = await _mediator.Send(getAllRecordsQuery);
+
+        bool emailSendResult = _emailService.TrySendRecords((List<Record>)records);
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
@@ -103,10 +104,10 @@ internal class CommandExecuter
             return;
         }
 
-        var record = new Record() { Description = "", Tags = new HashSet<Tag>() };
-        List<string> tags = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        foreach (var tag in tags)
+        List<string> tagNames = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+
+        foreach (var tag in tagNames)
         {
             var isStringValid = tag.All(symbol => char.IsLetterOrDigit(symbol) == true);
             if (isStringValid == false)
@@ -116,17 +117,15 @@ internal class CommandExecuter
             }
         }
 
-
-        if (tags.Any() == true)
+        var tags = new HashSet<AddTagDto>();
+        if (tagNames.Any() == true)
         {
-            record.Tags = new HashSet<Tag>();
-            foreach (var tag in tags)
+            foreach (var tag in tagNames)
             {
-                record.Tags.Add(new Tag() { Name = tag });
+                tags.Add(new AddTagDto() { Name = tag });
             }
         }
-
-        record.Description = recordDescription;
+        var record = new AddRecordCommand() { Description = recordDescription, Tags = tags };
 
         var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags.ToList() };
         await _mediator.Send(addRecordCommand);

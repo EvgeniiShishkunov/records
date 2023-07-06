@@ -18,7 +18,8 @@ public class Tag
     /// Tag name.
     /// </summary>
     [Key]
-    public string Name { get; set; }
+    [MaxLength(150)]
+    required public string Name { get; set; }
 
     /// <summary>
     /// Records with this tag.

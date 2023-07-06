@@ -13,7 +13,7 @@ namespace KF.Records.Infrastructure.DataAccess;
 /// <summary>
 /// Class provide access to database
 /// </summary>
-public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
+public class AppDbContext : DbContext, IReadWriteDbContext
 {
     /// <summary>
     /// Indicate database connection options
@@ -31,38 +31,4 @@ public class AppDbContext : DbContext, IReadWriteDbContext, IRecordRepository
     /// Provide access to tags in database
     /// </summary>
     public DbSet<Tag> Tags { get; set; }
-
-    IReadOnlyCollection<Record> IRecordRepository.Records => Records.ToList();
-
-    /// <summary>
-    /// Add record into database
-    /// </summary>
-    public void AddRecord(Record record)
-    {
-        var atachedTags = new List<Tag>();
-        foreach (var tag in record.Tags)
-        {
-            var exiistingTag = Tags.FirstOrDefault(t => t.Name == tag.Name);
-            if (exiistingTag != null)
-            {
-                atachedTags.Add(exiistingTag);
-            }
-            else
-            {
-                atachedTags.Add(tag);
-            }
-        }
-        record.Tags = atachedTags;
-        Records.Add(record);
-        SaveChanges();
-    }
-
-    /// <summary>
-    /// Remove  record from database by id
-    /// </summary>
-    public void RemoveRecordById(int id)
-    {
-        Records.Remove(Records.Find(id));
-        SaveChanges();
-    }
 }

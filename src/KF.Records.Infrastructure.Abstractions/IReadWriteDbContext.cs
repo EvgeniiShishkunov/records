@@ -16,5 +16,15 @@ public interface IReadWriteDbContext
     /// <summary>
     /// Provide records in db
     /// </summary>
-    public DbSet<Record> Records { get; set; }
+    DbSet<Record> Records { get; }
+
+    /// <summary>
+    /// Provide tags in db
+    /// </summary>
+    DbSet<Tag> Tags { get; }
+
+    /// <summary>
+    /// Save changes in db
+    /// </summary>
+    int SaveChanges();
 }

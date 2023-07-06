@@ -1,5 +1,6 @@
 ﻿using KF.Records.Infrastructure.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,14 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// </summary>
 public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
 {
-    private readonly IRecordRepository _recordRepository;
+    private readonly IReadWriteDbContext _readWriteDbContext;
 
     /// <summary>
     /// Indicate database context
     /// </summary>
-    public RemoveRecordCommandHandler(IRecordRepository recordRepository)
+    public RemoveRecordCommandHandler(IReadWriteDbContext readWriteDbContext)
     {
-        _recordRepository = recordRepository;
+        _readWriteDbContext = readWriteDbContext;
     }
 
     /// <summary>
@@ -28,7 +29,9 @@ public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
     /// </summary>
     public Task Handle(RemoveRecordCommand request, CancellationToken cancellationToken)
     {
-        _recordRepository.RemoveRecordById(request.Id);
+        var removingRecord = _readWriteDbContext.Records.FirstOrDefault(r => r.Id == request.Id);
+        _readWriteDbContext.Records.Remove(removingRecord);
+        _readWriteDbContext.SaveChanges();
         return Task.CompletedTask;
     }
 }
