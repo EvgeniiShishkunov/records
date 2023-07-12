@@ -62,7 +62,7 @@ public class MailKitEmailReporter : IRecordEmailReporter
             return false;
         }
 
-        logger.LogTrace("Start trying to sent records on {Email}", Email);
+        logger.LogInformation("Start trying to sent records on {Email}", Email);
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Records", Email));
