@@ -1,6 +1,7 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,15 @@ namespace KF.Records.UseCases.Records.AddRecord;
 public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 {
     private readonly IReadWriteDbContext _readWriteDbContext;
+    private readonly ILogger<AddRecordCommandHandler> logger;
 
     /// <summary>
     /// Indicate database context
     /// </summary>
-    public AddRecordCommandHandler(IReadWriteDbContext readWriteDbContext)
+    public AddRecordCommandHandler(IReadWriteDbContext readWriteDbContext, ILogger<AddRecordCommandHandler> logger)
     {
         _readWriteDbContext = readWriteDbContext;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -29,12 +32,14 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
     /// </summary>
     public Task Handle(AddRecordCommand request, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Request to add record.");
         foreach (var tag in request.Tags)
         {
             var isStringValid = tag.Name.All(symbol => char.IsLetterOrDigit(symbol) == true);
             if (isStringValid == false)
             {
-                throw new ArgumentException("Incorrect tag name, use symbols and or numbers");
+                logger.LogError("Records have not been added. Incorrect tag name, use symbols and or numbers");
+                throw new ArgumentException("Records have not been added. Incorrect tag name, use symbols and or numbers");
             }
         }
 
@@ -53,6 +58,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 
         _readWriteDbContext.Records.Add(record);
         _readWriteDbContext.SaveChanges();
+        logger.LogInformation("Records have been added.");
         return Task.CompletedTask;
     }
 }
