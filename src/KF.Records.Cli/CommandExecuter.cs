@@ -41,9 +41,10 @@ internal class CommandExecuter
         Console.WriteLine("Sending notes by email");
 
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var records = await _mediator.Send(getAllRecordsQuery);
+        var recordsDto = await _mediator.Send(getAllRecordsQuery);
+        var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
 
-        bool emailSendResult = _emailService.TrySendRecords((List<Record>)records);
+        bool emailSendResult = _emailService.TrySendRecords(records.ToList());
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
