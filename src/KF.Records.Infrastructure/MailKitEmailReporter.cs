@@ -52,7 +52,7 @@ public class MailKitEmailReporter : IRecordEmailReporter
 
         if (records.Any() == false)
         {
-            logger.LogError("Failed to sent email. Nothing to send");
+            logger.LogWarning("Failed to sent email. Nothing to send");
             return false;
         }
 

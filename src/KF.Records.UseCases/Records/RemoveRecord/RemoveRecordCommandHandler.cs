@@ -16,7 +16,7 @@ namespace KF.Records.UseCases.Records.RemoveRecord;
 /// </summary>
 public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
 {
-    private readonly IReadWriteDbContext _readWriteDbContext;
+    private readonly IReadWriteDbContext readWriteDbContext;
     private readonly ILogger<RemoveRecordCommandHandler> logger;
 
     /// <summary>
@@ -24,7 +24,7 @@ public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
     /// </summary>
     public RemoveRecordCommandHandler(IReadWriteDbContext readWriteDbContext, ILogger<RemoveRecordCommandHandler> logger)
     {
-        _readWriteDbContext = readWriteDbContext;
+        this.readWriteDbContext = readWriteDbContext;
         this.logger = logger;
     }
 
@@ -35,9 +35,9 @@ public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
     {
         var id = request.Id;
         logger.LogInformation("Request to delete record with id {id} ", id);
-        var removingRecord = _readWriteDbContext.Records.FirstOrDefault(r => r.Id == request.Id);
-        _readWriteDbContext.Records.Remove(removingRecord);
-        _readWriteDbContext.SaveChanges();
+        var removingRecord = readWriteDbContext.Records.FirstOrDefault(r => r.Id == request.Id);
+        readWriteDbContext.Records.Remove(removingRecord);
+        readWriteDbContext.SaveChanges();
         logger.LogInformation("Record with id {id} have been deleted", id);
         return Task.CompletedTask;
     }

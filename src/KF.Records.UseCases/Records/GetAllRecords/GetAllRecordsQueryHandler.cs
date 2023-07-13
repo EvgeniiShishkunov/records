@@ -17,7 +17,7 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// </summary>
 public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, IList<GetRecordDto>>
 {
-    private readonly IReadWriteDbContext _readWriteDbContext;
+    private readonly IReadWriteDbContext readWriteDbContext;
     private readonly ILogger<GetAllRecordsQueryHandler> logger;
 
     /// <summary>   
@@ -25,7 +25,7 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     /// </summary>
     public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext, ILogger<GetAllRecordsQueryHandler> logger)
     {
-        _readWriteDbContext = readWriteDbContext;
+        this.readWriteDbContext = readWriteDbContext;
         this.logger = logger;
     }
 
@@ -35,14 +35,14 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Request for all records");
-        var records = _readWriteDbContext.Records.Select(record => new GetRecordDto()
+        var records = readWriteDbContext.Records.Select(record => new GetRecordDto()
         {
             Id = record.Id,
             Description = record.Description,
             Tags = record.Tags.ToList()
         });
-        var recordCount = records.Count();
-        logger.LogInformation("Request for all records completed. Total count {recordCount}", recordCount);
+        var RecordCount = records.Count();
+        logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
         return Task.FromResult((IList<GetRecordDto>)records.ToList());
     }
 }

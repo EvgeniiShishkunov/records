@@ -15,7 +15,7 @@ namespace KF.Records.UseCases.Records.AddRecord;
 /// </summary>
 public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 {
-    private readonly IReadWriteDbContext _readWriteDbContext;
+    private readonly IReadWriteDbContext readWriteDbContext;
     private readonly ILogger<AddRecordCommandHandler> logger;
 
     /// <summary>
@@ -23,7 +23,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
     /// </summary>
     public AddRecordCommandHandler(IReadWriteDbContext readWriteDbContext, ILogger<AddRecordCommandHandler> logger)
     {
-        _readWriteDbContext = readWriteDbContext;
+        this.readWriteDbContext = readWriteDbContext;
         this.logger = logger;
     }
 
@@ -45,7 +45,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 
         var atachedTags = new List<Tag>();
         var tagNames = request.Tags.Select(tag => tag.Name);
-        var existingTags = _readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToList();
+        var existingTags = readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToList();
         var existingTagNames = existingTags.Select(t => t.Name).ToList();
         var newTags = request.Tags.Where(t => !existingTagNames.Contains(t.Name))
             .Select(t => new Tag() { Name = t.Name });
@@ -56,8 +56,8 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
             Tags = existingTags.Union(newTags).ToList(),
         };
 
-        _readWriteDbContext.Records.Add(record);
-        _readWriteDbContext.SaveChanges();
+        readWriteDbContext.Records.Add(record);
+        readWriteDbContext.SaveChanges();
         logger.LogInformation("Records have been added.");
         return Task.CompletedTask;
     }
