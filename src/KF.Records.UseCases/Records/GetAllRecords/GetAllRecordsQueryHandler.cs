@@ -1,6 +1,8 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
+using KF.Records.UseCases.Records.AddRecord;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,14 +17,16 @@ namespace KF.Records.UseCases.Records.GetAllRecords;
 /// </summary>
 public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, IList<GetRecordDto>>
 {
-    private readonly IReadWriteDbContext _readWriteDbContext;
+    private readonly IReadWriteDbContext readWriteDbContext;
+    private readonly ILogger<GetAllRecordsQueryHandler> logger;
 
     /// <summary>   
     /// Indicate database context
     /// </summary>
-    public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext)
+    public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext, ILogger<GetAllRecordsQueryHandler> logger)
     {
-        _readWriteDbContext = readWriteDbContext;
+        this.readWriteDbContext = readWriteDbContext;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -30,13 +34,15 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     /// </summary>
     public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
-        var records = _readWriteDbContext.Records.Select(record => new GetRecordDto()
+        logger.LogInformation("Request for all records");
+        var records = readWriteDbContext.Records.Select(record => new GetRecordDto()
         {
             Id = record.Id,
             Description = record.Description,
             Tags = record.Tags.ToList()
         });
-        _readWriteDbContext.SaveChanges();
+        var RecordCount = records.Count();
+        logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
         return Task.FromResult((IList<GetRecordDto>)records.ToList());
     }
 }

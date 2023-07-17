@@ -3,6 +3,7 @@ using KF.Records.Infrastructure.Abstractions;
 using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using Org.BouncyCastle.Utilities;
 using System;
@@ -24,15 +25,18 @@ public class MailKitEmailReporter : IRecordEmailReporter
     private readonly string UserName;
     private readonly string Password;
 
+    private readonly ILogger<MailKitEmailReporter> logger;
+
     /// <summary>
     /// Indicate smpt server address, email by send records, username and password for smpt service
     /// </summary>
-    public MailKitEmailReporter(string smptAddress, string email, string username, string password)
+    public MailKitEmailReporter(string smptAddress, string email, string username, string password, ILogger<MailKitEmailReporter> logger)
     {
         SmtpAddress = smptAddress;
         Email = email;
         UserName = username;
         Password = password;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -42,18 +46,23 @@ public class MailKitEmailReporter : IRecordEmailReporter
     {
         if (records == null)
         {
-            throw new ArgumentNullException(nameof(records));
+            logger.LogError(new ArgumentNullException(nameof(records)), "Failed to sent email");
+            return false;
         }
 
         if (records.Any() == false)
         {
+            logger.LogWarning("Failed to sent email. Nothing to send");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Email))
         {
+            logger.LogError("Failed to sent email. No username or password or email");
             return false;
         }
+
+        logger.LogInformation("Start trying to sent records on {Email}", Email);
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Records", Email));
@@ -80,11 +89,13 @@ public class MailKitEmailReporter : IRecordEmailReporter
             client.Send(message);
             client.Disconnect(true);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            logger.LogError( ex, "Failed to sent email");
+            return false;
         }
 
+        logger.LogInformation("Records was sent to {Email}", Email);
         return true;
     }
 
