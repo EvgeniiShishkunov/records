@@ -16,35 +16,35 @@ namespace KF.Records.Cli;
 
 internal class CommandExecuter
 {
-    private readonly IRecordEmailReporter _emailService;
-    private readonly IMediator _mediator;
+    private readonly IRecordEmailReporter emailService;
+    private readonly IMediator mediator;
 
-    private string _command;
-    private List<string> _commandWords = new();
+    private string command;
+    private List<string> commandWords = new();
 
-    private readonly Dictionary<string, Action> _actionDelegates;
+    private readonly Dictionary<string, Func<Task>> _actionDelegates;
 
     public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator)
     {
-        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
-        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _actionDelegates = new Dictionary<string, Action>()
+        this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        _actionDelegates = new Dictionary<string, Func<Task>>()
         {
-            {"add", AddCommand },
-            {"list", ListCommand },
-            {"delete", DeleteCommand }
+            {"add", AddCommandAsync },
+            {"list", ListCommandAsync },
+            {"delete", DeleteCommandAsync }
         };
     }
 
-    public async void CancelKeyPress()
+    public async Task CancelKeyPress()
     {
         Console.WriteLine("Sending notes by email");
 
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var recordsDto = await _mediator.Send(getAllRecordsQuery);
+        var recordsDto = await mediator.Send(getAllRecordsQuery);
         var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
 
-        bool emailSendResult = _emailService.TrySendRecords(records.ToList());
+        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList());
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
@@ -55,21 +55,21 @@ internal class CommandExecuter
         }
     }
 
-    public void HandleCommand(string command)
+    public async Task HandleCommandAsync(string command)
     {
         if (command == null || command.Trim() == string.Empty)
         {
             return;
         }
 
-        _command = command;
-        _commandWords = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+        this.command = command;
+        commandWords = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-        string firstWord = _commandWords[0].ToLowerInvariant();
+        string firstWord = commandWords[0].ToLowerInvariant();
 
         if (_actionDelegates.TryGetValue(firstWord, out var action) == true)
         {
-            action.Invoke();
+            await action.Invoke();
         }
         else
         {
@@ -77,21 +77,21 @@ internal class CommandExecuter
         }
     }
 
-    private async void AddCommand()
+    private async Task AddCommandAsync()
     {
-        if (_commandWords.Count < 2)
+        if (commandWords.Count < 2)
         {
             Console.WriteLine("No note content. Use add \"(Your description)\"");
             return;
         }
 
-        int startTextDescriptionIndex = _command.IndexOf('"');
-        int endTextDescriptionIndex = _command.LastIndexOf('"');
+        int startTextDescriptionIndex = command.IndexOf('"');
+        int endTextDescriptionIndex = command.LastIndexOf('"');
         string recordDescription;
 
         if (startTextDescriptionIndex != -1 && endTextDescriptionIndex != -1 && startTextDescriptionIndex != endTextDescriptionIndex)
         {
-            recordDescription = _command[(startTextDescriptionIndex + 1)..endTextDescriptionIndex];
+            recordDescription = command[(startTextDescriptionIndex + 1)..endTextDescriptionIndex];
         }
         else
         {
@@ -106,7 +106,7 @@ internal class CommandExecuter
         }
 
 
-        List<string> tagNames = _command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+        List<string> tagNames = command[(endTextDescriptionIndex + 1)..].Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
         foreach (var tag in tagNames)
         {
@@ -129,16 +129,16 @@ internal class CommandExecuter
         var record = new AddRecordCommand() { Description = recordDescription, Tags = tags };
 
         var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags.ToList() };
-        await _mediator.Send(addRecordCommand);
+        await mediator.Send(addRecordCommand);
 
         Console.WriteLine("Record added");
     }
 
-    private async void ListCommand()
+    private async Task ListCommandAsync()
     {
         Console.WriteLine("All records");
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var records = await _mediator.Send(getAllRecordsQuery);
+        var records = await mediator.Send(getAllRecordsQuery);
 
         foreach (var record in records)
         {
@@ -156,15 +156,15 @@ internal class CommandExecuter
         }
     }
 
-    private async void DeleteCommand()
+    private async Task DeleteCommandAsync()
     {
-        if (_commandWords.Count < 2)
+        if (commandWords.Count < 2)
         {
             Console.WriteLine("ID not specified");
             return;
         }
 
-        List<string> parametrWords = _commandWords.GetRange(2, _commandWords.Count - 2);
+        List<string> parametrWords = commandWords.GetRange(2, commandWords.Count - 2);
 
         if (parametrWords.Any() == true)
         {
@@ -176,7 +176,7 @@ internal class CommandExecuter
             return;
         }
 
-        if (int.TryParse(_commandWords[1], out var id) == false)
+        if (int.TryParse(commandWords[1], out var id) == false)
         {
             Console.WriteLine("The ID is in the wrong format. Use natural number");
             return;
@@ -185,7 +185,7 @@ internal class CommandExecuter
         try
         {
             var removeRecordCommand = new RemoveRecordCommand() { Id = id };
-            await _mediator.Send(removeRecordCommand);
+            await mediator.Send(removeRecordCommand);
             Console.WriteLine("Record removed");
         }
         catch (Exception)

@@ -12,7 +12,7 @@ namespace KF.Records.Cli;
 
 internal class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         string email = "";
         string username = "";
@@ -39,11 +39,11 @@ internal class Program
             Console.WriteLine("You use " + smptpServerAddress + " by default \n");
         }
 
-        var serviceCollection = new ServiceCollection();
         var builder = new ConfigurationBuilder();
         builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         IConfiguration config = builder.Build();
 
+        var serviceCollection = new ServiceCollection();
         serviceCollection.AddLogging(loggingBuilder =>
         {
             // configure Logging with NLog
@@ -60,13 +60,13 @@ internal class Program
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
         var commandExecuter = serviceProvider.GetService<CommandExecuter>();
-        Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandler);
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKeyPressHandlerAsync);
 
-        void CancelKeyPressHandler(object sender, ConsoleCancelEventArgs args)
+        async void CancelKeyPressHandlerAsync(object sender, ConsoleCancelEventArgs args)
         {
             try
             {
-                commandExecuter.CancelKeyPress();
+                await commandExecuter.CancelKeyPress();
                 Environment.Exit(0);
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ internal class Program
         {
             try
             {
-                commandExecuter.HandleCommand(Console.ReadLine());
+                await commandExecuter.HandleCommandAsync(Console.ReadLine());
                 Console.WriteLine();
             }
             catch (Exception ex)
