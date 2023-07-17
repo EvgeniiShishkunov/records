@@ -2,6 +2,7 @@
 using KF.Records.Infrastructure.Abstractions;
 using KF.Records.UseCases.Records.AddRecord;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -32,17 +33,17 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     /// <summary>
     /// Return all records from database
     /// </summary>
-    public Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
+    public async Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Request for all records");
-        var records = readWriteDbContext.Records.Select(record => new GetRecordDto()
+        var records = await readWriteDbContext.Records.Select(record => new GetRecordDto()
         {
             Id = record.Id,
             Description = record.Description,
             Tags = record.Tags.ToList()
-        });
+        }).ToListAsync();
         var RecordCount = records.Count();
         logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
-        return Task.FromResult((IList<GetRecordDto>)records.ToList());
+        return records;
     }
 }

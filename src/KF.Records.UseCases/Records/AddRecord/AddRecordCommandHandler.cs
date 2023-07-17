@@ -1,6 +1,7 @@
 ﻿using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
     /// <summary>
     /// Add record into databse
     /// </summary>
-    public Task Handle(AddRecordCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AddRecordCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Request to add record.");
         foreach (var tag in request.Tags)
@@ -45,7 +46,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 
         var atachedTags = new List<Tag>();
         var tagNames = request.Tags.Select(tag => tag.Name);
-        var existingTags = readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToList();
+        var existingTags = await readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToListAsync();
         var existingTagNames = existingTags.Select(t => t.Name).ToList();
         var newTags = request.Tags.Where(t => !existingTagNames.Contains(t.Name))
             .Select(t => new Tag() { Name = t.Name });
@@ -56,9 +57,9 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
             Tags = existingTags.Union(newTags).ToList(),
         };
 
-        readWriteDbContext.Records.Add(record);
+        await readWriteDbContext.Records.AddAsync(record);
         readWriteDbContext.SaveChanges();
         logger.LogInformation("Records have been added.");
-        return Task.CompletedTask;
+        return;
     }
 }
