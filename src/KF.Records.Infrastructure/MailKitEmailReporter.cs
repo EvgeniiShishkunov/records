@@ -42,7 +42,7 @@ public class MailKitEmailReporter : IRecordEmailReporter
     /// <summary>
     /// Return true if records have been sent
     /// </summary>
-    public bool TrySendRecords(List<Record> records)
+    public async Task<bool> TrySendRecordsAsync(List<Record> records)
     {
         if (records == null)
         {
@@ -84,10 +84,10 @@ public class MailKitEmailReporter : IRecordEmailReporter
         try
         {
             using var client = new SmtpClient();
-            client.Connect(SmtpAddress, 587, SecureSocketOptions.StartTls);
-            client.Authenticate(UserName, Password);
-            client.Send(message);
-            client.Disconnect(true);
+            await client.ConnectAsync(SmtpAddress, 587, SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(UserName, Password);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
         }
         catch (Exception ex)
         {
