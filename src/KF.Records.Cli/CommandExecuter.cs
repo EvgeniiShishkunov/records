@@ -9,12 +9,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace KF.Records.Cli;
 
-internal class CommandExecuter
+internal class CommandExecuter: IDisposable
 {
     private readonly IRecordEmailReporter emailService;
     private readonly IMediator mediator;
@@ -22,13 +23,15 @@ internal class CommandExecuter
     private string command;
     private List<string> commandWords = new();
 
-    private readonly Dictionary<string, Func<Task>> _actionDelegates;
+    private readonly Dictionary<string, Func<CancellationToken, Task>> _actionDelegates;
+
+    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator)
     {
         this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
-        _actionDelegates = new Dictionary<string, Func<Task>>()
+        _actionDelegates = new Dictionary<string, Func<CancellationToken, Task>>()
         {
             {"add", AddCommandAsync },
             {"list", ListCommandAsync },
@@ -38,13 +41,17 @@ internal class CommandExecuter
 
     public async Task CancelKeyPress()
     {
+        cancellationTokenSource.Cancel();
+        cancellationTokenSource.Dispose();
+
         Console.WriteLine("Sending notes by email");
 
+        var cancelKeyPressCancellationTokenSource = new CancellationTokenSource();
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var recordsDto = await mediator.Send(getAllRecordsQuery);
+        var recordsDto = await mediator.Send(getAllRecordsQuery, cancelKeyPressCancellationTokenSource.Token);
         var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
 
-        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList());
+        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList(), cancelKeyPressCancellationTokenSource.Token);
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
@@ -53,6 +60,7 @@ internal class CommandExecuter
         {
             Console.WriteLine("Error. Message with notes was not sent");
         }
+        cancelKeyPressCancellationTokenSource.Dispose();
     }
 
     public async Task HandleCommandAsync(string command)
@@ -69,7 +77,7 @@ internal class CommandExecuter
 
         if (_actionDelegates.TryGetValue(firstWord, out var action) == true)
         {
-            await action.Invoke();
+            await action.Invoke(cancellationTokenSource.Token);
         }
         else
         {
@@ -77,7 +85,7 @@ internal class CommandExecuter
         }
     }
 
-    private async Task AddCommandAsync()
+    private async Task AddCommandAsync(CancellationToken cancellationToken)
     {
         if (commandWords.Count < 2)
         {
@@ -129,16 +137,16 @@ internal class CommandExecuter
         var record = new AddRecordCommand() { Description = recordDescription, Tags = tags };
 
         var addRecordCommand = new AddRecordCommand() { Description = record.Description, Tags = record.Tags.ToList() };
-        await mediator.Send(addRecordCommand);
+        await mediator.Send(addRecordCommand, cancellationToken);
 
         Console.WriteLine("Record added");
     }
 
-    private async Task ListCommandAsync()
+    private async Task ListCommandAsync(CancellationToken cancellationToken)
     {
         Console.WriteLine("All records");
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var records = await mediator.Send(getAllRecordsQuery);
+        var records = await mediator.Send(getAllRecordsQuery, cancellationToken);
 
         foreach (var record in records)
         {
@@ -156,7 +164,7 @@ internal class CommandExecuter
         }
     }
 
-    private async Task DeleteCommandAsync()
+    private async Task DeleteCommandAsync(CancellationToken cancellationToken)
     {
         if (commandWords.Count < 2)
         {
@@ -185,12 +193,17 @@ internal class CommandExecuter
         try
         {
             var removeRecordCommand = new RemoveRecordCommand() { Id = id };
-            await mediator.Send(removeRecordCommand);
+            await mediator.Send(removeRecordCommand, cancellationToken);
             Console.WriteLine("Record removed");
         }
         catch (Exception)
         {
             Console.WriteLine("Record with given ID not found");
         }
+    }
+
+    void IDisposable.Dispose()
+    {
+        cancellationTokenSource.Dispose();
     }
 }

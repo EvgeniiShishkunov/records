@@ -41,8 +41,8 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
             Id = record.Id,
             Description = record.Description,
             Tags = record.Tags.ToList()
-        }).ToListAsync();
-        var RecordCount = records.Count();
+        }).ToListAsync(cancellationToken);
+        var RecordCount = records.Count;
         logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
         return records;
     }

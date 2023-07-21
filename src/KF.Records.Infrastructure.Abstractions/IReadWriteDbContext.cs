@@ -27,4 +27,9 @@ public interface IReadWriteDbContext
     /// Save changes in db
     /// </summary>
     int SaveChanges();
+
+    /// <summary>
+    /// Save changes in db
+    /// </summary>
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

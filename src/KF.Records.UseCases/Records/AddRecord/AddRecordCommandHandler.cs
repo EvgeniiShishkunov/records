@@ -46,7 +46,7 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
 
         var atachedTags = new List<Tag>();
         var tagNames = request.Tags.Select(tag => tag.Name);
-        var existingTags = await readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToListAsync();
+        var existingTags = await readWriteDbContext.Tags.Where(t => tagNames.Contains(t.Name)).ToListAsync(cancellationToken);
         var existingTagNames = existingTags.Select(t => t.Name).ToList();
         var newTags = request.Tags.Where(t => !existingTagNames.Contains(t.Name))
             .Select(t => new Tag() { Name = t.Name });
@@ -57,8 +57,8 @@ public class AddRecordCommandHandler : IRequestHandler<AddRecordCommand>
             Tags = existingTags.Union(newTags).ToList(),
         };
 
-        await readWriteDbContext.Records.AddAsync(record);
-        readWriteDbContext.SaveChanges();
+        readWriteDbContext.Records.Add(record);
+        await readWriteDbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Records have been added.");
         return;
     }

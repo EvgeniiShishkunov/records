@@ -15,5 +15,5 @@ public interface IRecordEmailReporter
     /// <summary>
     /// Return true if records have been sent
     /// </summary>
-    Task<bool> TrySendRecordsAsync(List<Record> records);
+    Task<bool> TrySendRecordsAsync(List<Record> records, CancellationToken cancellationToken);
 }
