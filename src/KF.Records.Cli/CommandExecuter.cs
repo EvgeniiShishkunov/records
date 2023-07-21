@@ -46,7 +46,7 @@ internal class CommandExecuter: IDisposable
 
         Console.WriteLine("Sending notes by email");
 
-        var cancelKeyPressCancellationTokenSource = new CancellationTokenSource();
+        var cancelKeyPressCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
         var getAllRecordsQuery = new GetAllRecordsQuery();
         var recordsDto = await mediator.Send(getAllRecordsQuery, cancelKeyPressCancellationTokenSource.Token);
         var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
