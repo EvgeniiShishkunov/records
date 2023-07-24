@@ -10,8 +10,9 @@ using NLog.Extensions.Logging;
 
 namespace KF.Records.Cli;
 
-internal class Program
+internal class Program: IDisposable
 {
+    private static readonly CancellationTokenSource cancellationTokenSource = new();
     static async Task Main(string[] args)
     {
         string email = "";
@@ -66,6 +67,8 @@ internal class Program
         {
             try
             {
+                cancellationTokenSource.Cancel();
+                cancellationTokenSource.Dispose();
                 await commandExecuter.CancelKeyPress();
                 Environment.Exit(0);
             }
@@ -80,7 +83,7 @@ internal class Program
         {
             try
             {
-                await commandExecuter.HandleCommandAsync(Console.ReadLine());
+                await commandExecuter.HandleCommandAsync(Console.ReadLine(), cancellationTokenSource.Token);
                 Console.WriteLine();
             }
             catch (Exception ex)
@@ -89,5 +92,9 @@ internal class Program
                 Console.WriteLine(ex.Message);
             }
         }
+    }
+    void IDisposable.Dispose()
+    {
+        cancellationTokenSource.Dispose();
     }
 }

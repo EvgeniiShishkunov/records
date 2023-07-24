@@ -63,7 +63,7 @@ internal class CommandExecuter: IDisposable
         cancelKeyPressCancellationTokenSource.Dispose();
     }
 
-    public async Task HandleCommandAsync(string command)
+    public async Task HandleCommandAsync(string command, CancellationToken cancellationToken)
     {
         if (command == null || command.Trim() == string.Empty)
         {
