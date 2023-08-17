@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
+using System.Threading;
 
 namespace KF.Records.Cli;
 
@@ -65,11 +66,13 @@ internal class Program: IDisposable
 
         async void CancelKeyPressHandlerAsync(object sender, ConsoleCancelEventArgs args)
         {
+            args.Cancel = true;
             try
             {
                 cancellationTokenSource.Cancel();
-                cancellationTokenSource.Dispose();
-                await commandExecuter.CancelKeyPress();
+                var cancelKeyPressCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                await commandExecuter.CancelKeyPress(cancelKeyPressCancellationTokenSource.Token);
+                args.Cancel = false;
                 Environment.Exit(0);
             }
             catch (Exception ex)

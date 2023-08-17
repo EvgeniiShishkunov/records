@@ -39,19 +39,17 @@ internal class CommandExecuter: IDisposable
         };
     }
 
-    public async Task CancelKeyPress()
+    public async Task CancelKeyPress(CancellationToken cancellationToken)
     {
         cancellationTokenSource.Cancel();
-        cancellationTokenSource.Dispose();
 
         Console.WriteLine("Sending notes by email");
 
-        var cancelKeyPressCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(2));
         var getAllRecordsQuery = new GetAllRecordsQuery();
-        var recordsDto = await mediator.Send(getAllRecordsQuery, cancelKeyPressCancellationTokenSource.Token);
+        var recordsDto = await mediator.Send(getAllRecordsQuery, cancellationToken);
         var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
 
-        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList(), cancelKeyPressCancellationTokenSource.Token);
+        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList(), cancellationToken);
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
@@ -60,7 +58,6 @@ internal class CommandExecuter: IDisposable
         {
             Console.WriteLine("Error. Message with notes was not sent");
         }
-        cancelKeyPressCancellationTokenSource.Dispose();
     }
 
     public async Task HandleCommandAsync(string command, CancellationToken cancellationToken)
