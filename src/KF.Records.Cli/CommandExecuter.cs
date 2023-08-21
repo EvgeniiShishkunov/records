@@ -15,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace KF.Records.Cli;
 
-internal class CommandExecuter: IDisposable
+internal class CommandExecuter
 {
     private readonly IRecordEmailReporter emailService;
     private readonly IMediator mediator;
@@ -24,8 +24,6 @@ internal class CommandExecuter: IDisposable
     private List<string> commandWords = new();
 
     private readonly Dictionary<string, Func<CancellationToken, Task>> _actionDelegates;
-
-    private readonly CancellationTokenSource cancellationTokenSource = new();
 
     public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator)
     {
@@ -41,8 +39,6 @@ internal class CommandExecuter: IDisposable
 
     public async Task CancelKeyPress(CancellationToken cancellationToken)
     {
-        cancellationTokenSource.Cancel();
-
         Console.WriteLine("Sending notes by email");
 
         var getAllRecordsQuery = new GetAllRecordsQuery();
@@ -74,7 +70,7 @@ internal class CommandExecuter: IDisposable
 
         if (_actionDelegates.TryGetValue(firstWord, out var action) == true)
         {
-            await action.Invoke(cancellationTokenSource.Token);
+            await action.Invoke(cancellationToken);
         }
         else
         {
@@ -197,10 +193,5 @@ internal class CommandExecuter: IDisposable
         {
             Console.WriteLine("Record with given ID not found");
         }
-    }
-
-    void IDisposable.Dispose()
-    {
-        cancellationTokenSource.Dispose();
     }
 }

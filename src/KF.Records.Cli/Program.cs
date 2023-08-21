@@ -11,11 +11,12 @@ using System.Threading;
 
 namespace KF.Records.Cli;
 
-internal class Program: IDisposable
+internal class Program
 {
-    private static readonly CancellationTokenSource cancellationTokenSource = new();
     static async Task Main(string[] args)
     {
+        using CancellationTokenSource cancellationTokenSource = new();
+
         string email = "";
         string username = "";
         string password = "";
@@ -95,9 +96,5 @@ internal class Program: IDisposable
                 Console.WriteLine(ex.Message);
             }
         }
-    }
-    void IDisposable.Dispose()
-    {
-        cancellationTokenSource.Dispose();
     }
 }
