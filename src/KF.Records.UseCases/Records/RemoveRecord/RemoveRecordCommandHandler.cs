@@ -31,14 +31,19 @@ public class RemoveRecordCommandHandler : IRequestHandler<RemoveRecordCommand>
     /// <summary>
     /// Reamove record from database. Indicate record id
     /// </summary>
-    public Task Handle(RemoveRecordCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RemoveRecordCommand request, CancellationToken cancellationToken)
     {
         var id = request.Id;
         logger.LogInformation("Request to delete record with id {id} ", id);
-        var removingRecord = readWriteDbContext.Records.FirstOrDefault(r => r.Id == request.Id);
+        var removingRecord = await readWriteDbContext.Records.FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+        if (removingRecord == null)
+        {
+            logger.LogInformation("Record with id {id} have't been founded", id);
+            throw new ArgumentNullException("Record with id " + id.ToString() + " have't been founded");
+        }
         readWriteDbContext.Records.Remove(removingRecord);
-        readWriteDbContext.SaveChanges();
+        await readWriteDbContext.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Record with id {id} have been deleted", id);
-        return Task.CompletedTask;
+        return;
     }
 }
