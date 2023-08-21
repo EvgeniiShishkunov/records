@@ -19,6 +19,6 @@ public class AppMappingProfile : Profile
     /// </summary>
     public AppMappingProfile()
     {
-        CreateMap<Record, GetRecordDto>();
+        CreateMap<Record, GetRecordDto>().ReverseMap();
     }
 }

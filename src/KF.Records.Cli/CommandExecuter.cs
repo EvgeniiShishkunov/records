@@ -1,4 +1,5 @@
-﻿using KF.Records.Domain;
+﻿using AutoMapper;
+using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
 using KF.Records.UseCases.Records.AddRecord;
 using KF.Records.UseCases.Records.GetAllRecords;
@@ -19,16 +20,18 @@ internal class CommandExecuter
 {
     private readonly IRecordEmailReporter emailService;
     private readonly IMediator mediator;
+    private readonly IMapper mapper;
 
     private string command;
     private List<string> commandWords = new();
 
     private readonly Dictionary<string, Func<CancellationToken, Task>> _actionDelegates;
 
-    public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator)
+    public CommandExecuter(IRecordEmailReporter emailService, IMediator mediator, IMapper mapper)
     {
         this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _actionDelegates = new Dictionary<string, Func<CancellationToken, Task>>()
         {
             {"add", AddCommandAsync },
@@ -43,9 +46,9 @@ internal class CommandExecuter
 
         var getAllRecordsQuery = new GetAllRecordsQuery();
         var recordsDto = await mediator.Send(getAllRecordsQuery, cancellationToken);
-        var records = recordsDto.Select(r => new Record() { Description = r.Description, Tags = r.Tags.ToList() });
+        var records = mapper.Map<List<Record>>(recordsDto);
 
-        bool emailSendResult = await emailService.TrySendRecordsAsync(records.ToList(), cancellationToken);
+        bool emailSendResult = await emailService.TrySendRecordsAsync(records, cancellationToken);
         if (emailSendResult == true)
         {
             Console.WriteLine("Message with notes was sent");
