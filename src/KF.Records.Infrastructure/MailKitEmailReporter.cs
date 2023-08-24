@@ -1,5 +1,5 @@
 ﻿using KF.Records.Domain;
-using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Infrastructure.Abstractions.Export;
 using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;

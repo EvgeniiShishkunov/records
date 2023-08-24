@@ -40,7 +40,9 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     public async Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Request for all records");
-        var records = await readWriteDbContext.Records.ProjectTo<GetRecordDto>(mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        var records = await readWriteDbContext.Records
+            .ProjectTo<GetRecordDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
         var RecordCount = records.Count;
         logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
         return records;

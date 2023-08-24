@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using KF.Records.Domain;
-using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Infrastructure.Abstractions.Export;
 using KF.Records.UseCases.Records.AddRecord;
 using KF.Records.UseCases.Records.GetAllRecords;
 using KF.Records.UseCases.Records.RemoveRecord;
