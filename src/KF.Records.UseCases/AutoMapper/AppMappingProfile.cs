@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KF.Records.Domain;
+using KF.Records.Infrastructure.Abstractions.Export;
 using KF.Records.UseCases.Records.GetAllRecords;
 using System;
 using System.Collections.Generic;
@@ -20,5 +21,6 @@ public class AppMappingProfile : Profile
     public AppMappingProfile()
     {
         CreateMap<Record, GetRecordDto>().ReverseMap();
+        CreateMap<GetRecordDto, RecordEmailModel>();
     }
 }

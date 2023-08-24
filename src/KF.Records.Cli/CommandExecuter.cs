@@ -46,7 +46,7 @@ internal class CommandExecuter
 
         var getAllRecordsQuery = new GetAllRecordsQuery();
         var recordsDto = await mediator.Send(getAllRecordsQuery, cancellationToken);
-        var records = mapper.Map<List<Record>>(recordsDto);
+        var records = mapper.Map<List<RecordEmailModel>>(recordsDto);
 
         bool emailSendResult = await emailService.TrySendRecordsAsync(records, cancellationToken);
         if (emailSendResult == true)
