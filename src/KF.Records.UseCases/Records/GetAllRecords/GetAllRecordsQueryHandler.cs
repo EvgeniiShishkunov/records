@@ -1,4 +1,6 @@
-﻿using KF.Records.Domain;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using KF.Records.Domain;
 using KF.Records.Infrastructure.Abstractions;
 using KF.Records.UseCases.Records.AddRecord;
 using MediatR;
@@ -20,14 +22,16 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
 {
     private readonly IReadWriteDbContext readWriteDbContext;
     private readonly ILogger<GetAllRecordsQueryHandler> logger;
+    private readonly IMapper mapper;
 
     /// <summary>   
     /// Indicate database context
     /// </summary>
-    public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext, ILogger<GetAllRecordsQueryHandler> logger)
+    public GetAllRecordsQueryHandler(IReadWriteDbContext readWriteDbContext, ILogger<GetAllRecordsQueryHandler> logger, IMapper mapper)
     {
         this.readWriteDbContext = readWriteDbContext;
         this.logger = logger;
+        this.mapper = mapper;
     }
 
     /// <summary>
@@ -36,12 +40,9 @@ public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQuery, ILi
     public async Task<IList<GetRecordDto>> Handle(GetAllRecordsQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Request for all records");
-        var records = await readWriteDbContext.Records.Select(record => new GetRecordDto()
-        {
-            Id = record.Id,
-            Description = record.Description,
-            Tags = record.Tags.ToList()
-        }).ToListAsync(cancellationToken);
+        var records = await readWriteDbContext.Records
+            .ProjectTo<GetRecordDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
         var RecordCount = records.Count;
         logger.LogInformation("Request for all records completed. Total count {RecordCount}", RecordCount);
         return records;

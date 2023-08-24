@@ -1,5 +1,5 @@
 ﻿using KF.Records.Domain;
-using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Infrastructure.Abstractions.Export;
 using MailKit;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -42,7 +42,7 @@ public class MailKitEmailReporter : IRecordEmailReporter
     /// <summary>
     /// Return true if records have been sent
     /// </summary>
-    public async Task<bool> TrySendRecordsAsync(List<Record> records, CancellationToken cancellationToken)
+    public async Task<bool> TrySendRecordsAsync(List<RecordEmailModel> records, CancellationToken cancellationToken)
     {
         if (records == null)
         {

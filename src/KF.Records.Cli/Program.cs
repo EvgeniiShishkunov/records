@@ -1,6 +1,8 @@
 ﻿using KF.Records.Infrastructure;
 using KF.Records.Infrastructure.Abstractions;
+using KF.Records.Infrastructure.Abstractions.Export;
 using KF.Records.Infrastructure.DataAccess;
+using KF.Records.UseCases.AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,6 +61,7 @@ internal class Program
         serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(KF.Records.UseCases.Records.AddRecord.AddRecordCommand).Assembly));
         serviceCollection.AddScoped<IReadWriteDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         serviceCollection.AddDbContext<AppDbContext>(options => options.UseNpgsql(config.GetSection("ConnectionStrings").GetSection("Default").Value));
+        serviceCollection.AddAutoMapper(typeof(AppMappingProfile));
 
         var serviceProvider = serviceCollection.BuildServiceProvider();
 
